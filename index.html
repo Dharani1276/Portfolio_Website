@@ -181,20 +181,8 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
-<script type="text/babel">
 const { useState, useRef, useCallback, useEffect } = React;
 const MAX_MSG = 2000;
-
-/* ══════════════════════════════════════════════════
-   GALLERY_IMAGES — images baked directly into HTML.
-   When you "Export & Download", a new index.html is
-   generated with your uploaded images embedded here,
-   so they appear for EVERYONE who visits the site.
-══════════════════════════════════════════════════ */
-const GALLERY_IMAGES = [
-  /* IMAGES_PLACEHOLDER */
-];
-
 const DEFAULTS = {
   name:"Dharanitharan G", title:"Graphic Designer",
   bio:"I am honing my skills in Graphic Design to design brochures, Magazines, Business Cards, ID Cards, Logos, Social Media Posters, Banners, Book Cover Pages, and packaging designs, etc. My skills include Adobe Illustrator, InDesign, and Photoshop.",
@@ -204,63 +192,26 @@ const DEFAULTS = {
 };
 
 /* ── ICONS ── */
-const IgIcon  = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>;
-const LiIcon  = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>;
-const CL      = ()=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="15,18 9,12 15,6"/></svg>;
-const CR      = ()=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="9,18 15,12 9,6"/></svg>;
-const XI      = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
-const DIcon   = ()=><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>;
-const MIcon   = ()=><svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="3"/></svg>;
-
-/* ── localStorage helpers ── */
-const lsGet = (k,d)=>{ try{const s=localStorage.getItem(k);return s?JSON.parse(s):d;}catch(e){return d;} };
-const lsSet = (k,v)=>{ try{localStorage.setItem(k,JSON.stringify(v));}catch(e){} };
-
-/* ══════════════════════════
-   EXPORT — bakes images into
-   a new downloadable index.html
-══════════════════════════ */
-async function exportHTML(images, pic) {
-  const src = await fetch(window.location.href).then(r=>r.text());
-  // Replace GALLERY_IMAGES placeholder with actual base64 data
-  const imgJson = JSON.stringify(images.map(({src,name,id})=>({src,name,id})));
-  let out = src.replace(
-    /const GALLERY_IMAGES = \[[\s\S]*?\/\* IMAGES_PLACEHOLDER \*\/[\s\S]*?\];/,
-    `const GALLERY_IMAGES = ${imgJson};`
-  );
-  // Also bake in the profile pic
-  if (pic) {
-    out = out.replace(
-      /const BAKED_PIC = null;/,
-      `const BAKED_PIC = ${JSON.stringify(pic)};`
-    );
-  }
-  const blob = new Blob([out], {type:'text/html'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'index.html';
-  a.click();
-}
-
-/* ════════════════════════
-   PORTFOLIO COMPONENT
-════════════════════════ */
-const BAKED_PIC = null;
+const IgIcon = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>;
+const LiIcon = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>;
+const CL     = ()=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="15,18 9,12 15,6"/></svg>;
+const CR     = ()=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="9,18 15,12 9,6"/></svg>;
+const XI     = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+const DIcon  = ()=><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>;
+const MIcon  = ()=><svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="3"/></svg>;
+const SaveIcon = ()=><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>;
 
 function Portfolio() {
-  const [profile,  setProfile ] = useState(()=>lsGet("p_pr",DEFAULTS));
-  // Profile pic: baked-in wins over localStorage
-  const [pic,      setPic     ] = useState(()=>{
-    if(BAKED_PIC) return BAKED_PIC;
-    try{return localStorage.getItem("p_pic")||null;}catch(e){return null;}
-  });
-  // Images: start from baked-in array, then user can add more this session
-  const [images,   setImages  ] = useState(()=>
-    GALLERY_IMAGES.map((img,i)=>({...img, id:img.id||`baked_${i}`}))
-  );
-  const [sessionNew, setSessionNew] = useState([]); // newly added this session (not yet exported)
+  const sv  = (k,d)=>{ try{const s=localStorage.getItem(k);return s?JSON.parse(s):d;}catch(e){return d;} };
+  const svR = (k,d)=>{ try{const s=localStorage.getItem(k);return s?s:d;}catch(e){return d;} };
+
+  const [profile,  setProfile ] = useState(()=>sv("p_pr",DEFAULTS));
+  const [pic,      setPic     ] = useState(()=>{ try{return localStorage.getItem("p_pic")||null;}catch(e){return null;} });
+  /* Images now load from localStorage on start */
+  const [images,   setImages  ] = useState(()=>sv("p_imgs",[]));
+  const [savedImgs,setSavedImgs] = useState(()=>{ const s=sv("p_imgs",[]); return new Set(s.map(i=>i.id)); });
   const [editing,  setEditing ] = useState(false);
-  const [draft,    setDraft   ] = useState(()=>lsGet("p_pr",DEFAULTS));
+  const [draft,    setDraft   ] = useState(()=>sv("p_pr",DEFAULTS));
   const [skillIn,  setSkillIn ] = useState("");
   const [lb,       setLb      ] = useState(null);
   const [lbIdx,    setLbIdx   ] = useState(0);
@@ -272,7 +223,6 @@ function Portfolio() {
   const [form,     setForm    ] = useState({name:"",email:"",subject:"",message:""});
   const [sent,     setSent    ] = useState(false);
   const [revealed, setRevealed] = useState({});
-  const [exporting,setExporting]= useState(false);
   const picRef = useRef(); const gallRef = useRef(); const tRef = useRef();
 
   /* ── REVEAL OBSERVER ── */
@@ -280,13 +230,14 @@ function Portfolio() {
     const obs = new IntersectionObserver(entries=>{
       entries.forEach(e=>{ setRevealed(v=>({...v,[e.target.dataset.rid]:e.isIntersecting})); });
     },{threshold:0.1});
-    document.querySelectorAll("[data-rid]").forEach(el=>obs.observe(el));
+    document.querySelectorAll('[data-rid]').forEach(el=>obs.observe(el));
     return ()=>obs.disconnect();
   },[]);
+
   useEffect(()=>{
     Object.entries(revealed).forEach(([rid,isVis])=>{
       document.querySelectorAll(`[data-rid="${rid}"]`).forEach(el=>{
-        isVis ? el.classList.add("vis") : el.classList.remove("vis");
+        isVis ? el.classList.add('vis') : el.classList.remove('vis');
       });
     });
   },[revealed]);
@@ -296,104 +247,94 @@ function Portfolio() {
     const obs=new IntersectionObserver(es=>{
       es.forEach(e=>{if(e.isIntersecting)setActiveS(e.target.id);});
     },{threshold:0.25});
-    ["hero","work","about","contact"].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+    ['hero','work','about','contact'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
     return ()=>obs.disconnect();
   },[]);
 
-  const toast$ = (msg,err=false)=>{ clearTimeout(tRef.current); setToast({msg,err}); tRef.current=setTimeout(()=>setToast(null),3500); };
+  const toast$ = (msg,err=false)=>{ clearTimeout(tRef.current); setToast({msg,err}); tRef.current=setTimeout(()=>setToast(null),3000); };
 
   const scrollTo = id=>{
     setWipe(true);
-    setTimeout(()=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setActiveS(id); setTimeout(()=>setWipe(false),360); },280);
+    setTimeout(()=>{ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); setActiveS(id); setTimeout(()=>setWipe(false),360); },280);
   };
 
   /* ── PROFILE PIC ── */
   const handlePic = e=>{
-    const f=e.target.files[0]; if(!f||!f.type.startsWith("image/"))return;
+    const f=e.target.files[0]; if(!f||!f.type.startsWith('image/'))return;
     const r=new FileReader();
-    r.onload=ev=>{ setPic(ev.target.result); try{localStorage.setItem("p_pic",ev.target.result);}catch(e){} toast$("Profile photo updated ✓"); };
+    r.onload=ev=>{ setPic(ev.target.result); try{localStorage.setItem('p_pic',ev.target.result);}catch(e){} toast$('Profile photo updated ✓'); };
     r.readAsDataURL(f);
   };
-  const removePic=()=>{ setPic(null); try{localStorage.removeItem("p_pic");}catch(e){} toast$("Photo removed"); };
+  const removePic=()=>{ setPic(null); try{localStorage.removeItem('p_pic');}catch(e){} toast$('Photo removed'); };
 
-  /* ── ADD IMAGES (session only — must export to make permanent) ── */
+  /* ── GALLERY — save images to localStorage so they persist on refresh ── */
+  const persistImages = (imgs) => {
+    try { localStorage.setItem('p_imgs', JSON.stringify(imgs)); } catch(e) {
+      toast$('Storage full — some images may not save', true);
+    }
+  };
+
   const addImages = useCallback(files=>{
-    const space=50-images.length; if(space<=0)return toast$("Max 50 images",true);
-    const valid=Array.from(files).filter(f=>f.type.startsWith("image/")).slice(0,space);
-    if(!valid.length)return toast$("No valid images",true);
+    const space=50-images.length; if(space<=0)return toast$('Max 50 images',true);
+    const valid=Array.from(files).filter(f=>f.type.startsWith('image/')).slice(0,space);
+    if(!valid.length)return toast$('No valid images',true);
     Promise.all(valid.map(f=>new Promise(res=>{
       const r=new FileReader();
       r.onload=ev=>res({src:ev.target.result,name:f.name,id:Math.random().toString(36).slice(2)});
       r.readAsDataURL(f);
-    }))).then(newImgs=>{
-      setImages(prev=>[...prev,...newImgs]);
-      setSessionNew(prev=>[...prev,...newImgs.map(i=>i.id)]);
-      toast$(`${newImgs.length} image${newImgs.length>1?"s":""} added — click "Export & Download" to save for everyone!`);
+    }))).then(imgs=>{
+      setImages(prev=>{
+        const next=[...prev,...imgs];
+        persistImages(next);
+        setSavedImgs(new Set(next.map(i=>i.id)));
+        return next;
+      });
+      toast$(`${imgs.length} image${imgs.length>1?'s':''} added & saved ✓`);
     });
   },[images.length]);
 
-  /* ── REMOVE IMAGE ── */
-  const removeImg = id=>{
-    setImages(prev=>prev.filter(i=>i.id!==id));
-    setSessionNew(prev=>prev.filter(x=>x!==id));
-    if(lb&&lb.id===id) setLb(null);
-    toast$("Image removed — export to save changes");
+  /* Save a single image explicitly */
+  const saveOneImg = (id, e)=>{
+    e.stopPropagation();
+    setSavedImgs(prev=>{ const n=new Set(prev); n.add(id); return n; });
+    persistImages(images);
+    toast$('Image saved ✓');
   };
 
-  /* ── EXPORT & DOWNLOAD ── */
-  const doExport = async ()=>{
-    if(images.length===0) return toast$("Add images first",true);
-    setExporting(true);
-    toast$("Building your portfolio file…");
-    try {
-      await exportHTML(images, pic);
-      setSessionNew([]);
-      toast$("✓ index.html downloaded! Replace on GitHub & push to go live.");
-    } catch(err) {
-      toast$("Export failed: "+err.message, true);
-    }
-    setExporting(false);
-  };
+  /* Save all gallery images button */
+  const saveAllImgs = ()=>{ persistImages(images); setSavedImgs(new Set(images.map(i=>i.id))); toast$(`All ${images.length} images saved ✓`); };
 
+  const removeImg = id=>{ setImages(p=>{ const n=p.filter(i=>i.id!==id); persistImages(n); return n; }); setLb(null); toast$('Image removed'); };
   const openLb = (img,idx)=>{ setLb(img); setLbIdx(idx); };
   const lbNav  = dir=>{ const n=(lbIdx+dir+images.length)%images.length; setLb(images[n]); setLbIdx(n); };
 
   useEffect(()=>{
-    const fn=e=>{ if(!lb)return; if(e.key==="Escape")setLb(null); if(e.key==="ArrowLeft")lbNav(-1); if(e.key==="ArrowRight")lbNav(1); };
-    window.addEventListener("keydown",fn); return ()=>window.removeEventListener("keydown",fn);
+    const fn=e=>{ if(!lb)return; if(e.key==='Escape')setLb(null); if(e.key==='ArrowLeft')lbNav(-1); if(e.key==='ArrowRight')lbNav(1); };
+    window.addEventListener('keydown',fn); return ()=>window.removeEventListener('keydown',fn);
   },[lb,lbIdx,images]);
 
-  const saveEdit=()=>{ setProfile(draft); lsSet("p_pr",draft); setEditing(false); toast$("Changes saved ✓"); };
+  /* ── SAVE PROFILE ── */
+  const saveEdit=()=>{ setProfile(draft); try{localStorage.setItem('p_pr',JSON.stringify(draft));}catch(e){} setEditing(false); toast$('Changes saved ✓'); };
+
+  /* ── CONTACT FORM ── */
   const submitForm=()=>{
-    if(!form.name||!form.email||!form.message)return toast$("Please fill all required fields",true);
-    setSent(true); toast$("Message sent! ✓");
-    setTimeout(()=>{ setSent(false); setForm({name:"",email:"",subject:"",message:""}); },3500);
+    if(!form.name||!form.email||!form.message)return toast$('Please fill all required fields',true);
+    setSent(true); toast$('Message sent! ✓');
+    setTimeout(()=>{ setSent(false); setForm({name:'',email:'',subject:'',message:''}); },3500);
   };
 
   const msgLen  = form.message.length;
-  const msgClass= msgLen>1800?"over":msgLen>1400?"warn":"";
-  const hasNew  = sessionNew.length > 0;
+  const msgClass= msgLen>1800?'over':msgLen>1400?'warn':'';
 
+  /* ── RENDER ── */
   return (
-    <div style={{background:"#2d0a0a",color:"#fff",minHeight:"100vh",fontFamily:"Georgia,serif",overflowX:"hidden"}}>
+    <div style={{background:'#2d0a0a',color:'#fff',minHeight:'100vh',fontFamily:'Georgia,serif',overflowX:'hidden'}}>
 
-      <div className={`wipe${wipe?" show":" hide"}`}/>
-      {toast&&<div className={`toast${toast.err?" err":""}`}>{toast.msg}</div>}
+      {/* WIPE */}
+      <div className={`wipe${wipe?' show':' hide'}`}/>
 
-      {/* ── EXPORT BANNER — shown when new images added ── */}
-      {hasNew&&(
-        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:300,background:"#1a0800",borderTop:"2px solid #f5c842",padding:"14px 28px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,flexWrap:"wrap"}}>
-          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:12,color:"#f5c842"}}>
-            ⚠ {sessionNew.length} new image{sessionNew.length>1?"s":""} added — not yet visible to website visitors
-          </div>
-          <div style={{display:"flex",gap:10,alignItems:"center"}}>
-            <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:"#c9a0a0"}}>Download → replace on GitHub → push</span>
-            <button className="gbtn" style={{padding:"9px 22px",fontSize:10}} onClick={doExport} disabled={exporting}>
-              <span className="gbtn-t">{exporting?"Building…":"📥 Export & Download"}</span>
-            </button>
-          </div>
-        </div>
-      )}
+      {/* TOAST */}
+      {toast&&<div className={`toast${toast.err?' err':''}`}>{toast.msg}</div>}
 
       {/* ── LIGHTBOX ── */}
       {lb&&(
@@ -403,10 +344,10 @@ function Portfolio() {
             <button className="lbbtn" style={{left:16}} onClick={e=>{e.stopPropagation();lbNav(-1);}}><CL/></button>
             <button className="lbbtn" style={{right:16}} onClick={e=>{e.stopPropagation();lbNav(1);}}><CR/></button>
           </>}
-          <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:16,maxWidth:"92vw"}} onClick={e=>e.stopPropagation()}>
-            <img src={lb.src} alt={lb.name} style={{maxWidth:"88vw",maxHeight:"82vh",objectFit:"contain"}}/>
-            <div style={{display:"flex",gap:14,alignItems:"center"}}>
-              <span style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:"#7a3535"}}>{lbIdx+1} / {images.length}</span>
+          <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:16,maxWidth:'92vw'}} onClick={e=>e.stopPropagation()}>
+            <img src={lb.src} alt={lb.name} style={{maxWidth:'88vw',maxHeight:'82vh',objectFit:'contain'}}/>
+            <div style={{display:'flex',gap:14,alignItems:'center'}}>
+              <span style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#7a3535'}}>{lbIdx+1} / {images.length}</span>
               <button className="dangerbtn" onClick={()=>removeImg(lb.id)}>✕ Remove</button>
             </div>
           </div>
@@ -417,42 +358,42 @@ function Portfolio() {
       {editing&&(
         <div className="mover" onClick={()=>setEditing(false)}>
           <div className="mbox" onClick={e=>e.stopPropagation()}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:30}}>
-              <h2 style={{fontFamily:"'Playfair Display',serif",fontWeight:400,fontSize:28,color:"#fff"}}>Edit Profile</h2>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:30}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontWeight:400,fontSize:28,color:'#fff'}}>Edit Profile</h2>
               <button className="ghostbtn" onClick={()=>setEditing(false)}>✕ Close</button>
             </div>
-            <div style={{display:"flex",flexDirection:"column",gap:18}}>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
-                {[["Name","name"],["Title / Role","title"]].map(([l,k])=>(
+            <div style={{display:'flex',flexDirection:'column',gap:18}}>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+                {[['Name','name'],['Title / Role','title']].map(([l,k])=>(
                   <div key={k}><span className="lbl">{l}</span><input className="field" value={draft[k]} onChange={e=>setDraft(p=>({...p,[k]:e.target.value}))}/></div>
                 ))}
               </div>
               <div><span className="lbl">Bio</span><textarea className="field" style={{minHeight:80}} value={draft.bio} onChange={e=>setDraft(p=>({...p,bio:e.target.value}))}/></div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
-                {[["Email","email"],["Location","location"]].map(([l,k])=>(
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+                {[['Email','email'],['Location','location']].map(([l,k])=>(
                   <div key={k}><span className="lbl">{l}</span><input className="field" value={draft[k]} onChange={e=>setDraft(p=>({...p,[k]:e.target.value}))}/></div>
                 ))}
               </div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
                 <div><span className="lbl">Instagram</span><input className="field" value={draft.instagram} onChange={e=>setDraft(p=>({...p,instagram:e.target.value}))}/></div>
                 <div><span className="lbl">LinkedIn URL</span><input className="field" value={draft.linkedin} onChange={e=>setDraft(p=>({...p,linkedin:e.target.value}))}/></div>
               </div>
               <div>
                 <span className="lbl">Skills</span>
-                <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:10}}>
+                <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:10}}>
                   {draft.skills.map((s,i)=><span key={i} className="schip">{s}<button className="rmsk" onClick={()=>setDraft(p=>({...p,skills:p.skills.filter((_,j)=>j!==i)}))}>×</button></span>)}
                 </div>
-                <div style={{display:"flex",gap:8}}>
-                  <input className="field" style={{flex:1}} placeholder="New skill…" value={skillIn} onChange={e=>setSkillIn(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&skillIn.trim()){setDraft(p=>({...p,skills:[...p.skills,skillIn.trim()]}));setSkillIn("");}}}/>
-                  <button className="ghostbtn" onClick={()=>{if(skillIn.trim()){setDraft(p=>({...p,skills:[...p.skills,skillIn.trim()]}));setSkillIn("")}}}>Add</button>
+                <div style={{display:'flex',gap:8}}>
+                  <input className="field" style={{flex:1}} placeholder="New skill…" value={skillIn} onChange={e=>setSkillIn(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&skillIn.trim()){setDraft(p=>({...p,skills:[...p.skills,skillIn.trim()]}));setSkillIn('');}}}/>
+                  <button className="ghostbtn" onClick={()=>{if(skillIn.trim()){setDraft(p=>({...p,skills:[...p.skills,skillIn.trim()]}));setSkillIn('');}}}>Add</button>
                 </div>
               </div>
-              <div style={{display:"flex",alignItems:"center",gap:10,padding:"12px 0",borderTop:"1px solid #6b2020"}}>
+              <div style={{display:'flex',alignItems:'center',gap:10,padding:'12px 0',borderTop:'1px solid #6b2020'}}>
                 <input type="checkbox" id="avail" checked={draft.available} onChange={e=>setDraft(p=>({...p,available:e.target.checked}))}/>
-                <label htmlFor="avail" style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:"#c9a0a0",cursor:"pointer"}}>Available for new projects</label>
+                <label htmlFor="avail" style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#c9a0a0',cursor:'pointer'}}>Available for new projects</label>
               </div>
             </div>
-            <div style={{display:"flex",justifyContent:"flex-end",gap:12,marginTop:28,paddingTop:22,borderTop:"1px solid #6b2020"}}>
+            <div style={{display:'flex',justifyContent:'flex-end',gap:12,marginTop:28,paddingTop:22,borderTop:'1px solid #6b2020'}}>
               <button className="ghostbtn" onClick={()=>setEditing(false)}>Cancel</button>
               <button className="gbtn" onClick={saveEdit}><span className="gbtn-t">✓ Save Changes</span></button>
             </div>
@@ -461,73 +402,83 @@ function Portfolio() {
       )}
 
       {/* ── NAV ── */}
-      <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:200,padding:"0 28px",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,background:"rgba(18,2,2,.97)",backdropFilter:"blur(18px)",borderBottom:"1px solid #6b2020"}}>
-        <div style={{fontFamily:"'Playfair Display',serif",fontSize:19,fontWeight:400,letterSpacing:1,cursor:"pointer",color:"#fff",flexShrink:0}} onClick={()=>scrollTo("hero")}>
-          DHARANITHARAN<span style={{color:"#fff"}}> G</span>
+      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:200,padding:'0 28px',height:64,display:'flex',alignItems:'center',justifyContent:'space-between',gap:12,background:'rgba(18,2,2,.97)',backdropFilter:'blur(18px)',borderBottom:'1px solid #6b2020'}}>
+        <div style={{fontFamily:"'Playfair Display',serif",fontSize:19,fontWeight:400,letterSpacing:1,cursor:'pointer',color:'#fff',flexShrink:0}} onClick={()=>scrollTo('hero')}>
+          DHARANITHARAN<span style={{color:'#fff'}}> G</span>
         </div>
-        <div className="nav-links" style={{display:"flex",gap:2}}>
-          {[["hero","Home"],["work","Work"],["about","About"],["contact","Contact"]].map(([id,l])=>(
-            <span key={id} className={`npill${activeS===id?" act":""}`} onClick={()=>scrollTo(id)}>{l}</span>
+        <div className="nav-links" style={{display:'flex',gap:2}}>
+          {[['hero','Home'],['work','Work'],['about','About'],['contact','Contact']].map(([id,l])=>(
+            <span key={id} className={`npill${activeS===id?' act':''}`} onClick={()=>scrollTo(id)}>{l}</span>
           ))}
         </div>
-        <div style={{display:"flex",alignItems:"center",gap:16,flexShrink:0}}>
+        <div style={{display:'flex',alignItems:'center',gap:16,flexShrink:0}}>
           <div className="vtog">
-            <button className={`vbtn${view==="desktop"?" on":""}`} onClick={()=>setView("desktop")}><DIcon/> Desktop</button>
-            <button className={`vbtn${view==="mobile"?" on":""}`}  onClick={()=>setView("mobile")} ><MIcon/> Mobile</button>
+            <button className={`vbtn${view==='desktop'?' on':''}`} onClick={()=>setView('desktop')}><DIcon/> Desktop</button>
+            <button className={`vbtn${view==='mobile'?' on':''}`}  onClick={()=>setView('mobile')} ><MIcon/> Mobile</button>
           </div>
-          <button className="gbtn" style={{fontSize:10,padding:"8px 20px"}} onClick={()=>{setDraft({...profile});setEditing(true);}}>
+          <button className="gbtn" style={{fontSize:10,padding:'8px 20px'}} onClick={()=>{setDraft({...profile});setEditing(true);}}>
             <span className="gbtn-t">Edit Profile</span>
           </button>
         </div>
       </nav>
 
-      <div className={view==="mobile"?"mob-frame":""}>
+      {/* ── MOBILE FRAME WRAPPER ── */}
+      <div className={view==='mobile'?'mob-frame':''}>
 
-      {/* ════ HERO ════ */}
-      <section id="hero" style={{minHeight:"100vh",display:"flex",alignItems:"center",padding:"100px 48px 60px",position:"relative",overflow:"hidden",background:"linear-gradient(135deg,#2d0a0a 0%,#3d1010 55%,#2d0a0a 100%)"}}>
-        <div style={{position:"absolute",top:"8%",right:"4%",width:440,height:440,borderRadius:"50%",background:"radial-gradient(circle,rgba(245,200,66,.07) 0%,transparent 70%)",pointerEvents:"none"}}/>
-        <div style={{position:"absolute",bottom:"18%",left:"3%",width:1,height:240,background:"linear-gradient(to bottom,transparent,rgba(245,200,66,.3),transparent)",pointerEvents:"none"}}/>
-        <div className="hgrid" style={{maxWidth:1080,width:"100%",margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 1fr",gap:64,alignItems:"center"}}>
+      {/* ════════ HERO ════════ */}
+      <section id="hero" style={{minHeight:'100vh',display:'flex',alignItems:'center',padding:'100px 48px 60px',position:'relative',overflow:'hidden',background:'linear-gradient(135deg,#2d0a0a 0%,#3d1010 55%,#2d0a0a 100%)'}}>
+        <div style={{position:'absolute',top:'8%',right:'4%',width:440,height:440,borderRadius:'50%',background:'radial-gradient(circle,rgba(245,200,66,.07) 0%,transparent 70%)',pointerEvents:'none'}}/>
+        <div style={{position:'absolute',bottom:'18%',left:'3%',width:1,height:240,background:'linear-gradient(to bottom,transparent,rgba(245,200,66,.3),transparent)',pointerEvents:'none'}}/>
+
+        <div className="hgrid" style={{maxWidth:1080,width:'100%',margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:64,alignItems:'center'}}>
+          {/* LEFT */}
           <div data-rid="h1" className="reveal fl">
             {profile.available&&(
-              <div style={{display:"inline-flex",alignItems:"center",marginBottom:28,background:"rgba(74,222,128,.06)",border:"1px solid rgba(74,222,128,.2)",padding:"6px 14px"}}>
-                <span className="avdot"/><span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,letterSpacing:2,color:"#4ade80"}}>AVAILABLE FOR WORK</span>
+              <div style={{display:'inline-flex',alignItems:'center',marginBottom:28,background:'rgba(74,222,128,.06)',border:'1px solid rgba(74,222,128,.2)',padding:'6px 14px'}}>
+                <span className="avdot"/>
+                <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,letterSpacing:2,color:'#4ade80'}}>AVAILABLE FOR WORK</span>
               </div>
             )}
             <div className="sec-lbl">Creative Portfolio</div>
-            <h1 className="hero-name" style={{fontFamily:"'Playfair Display',serif",fontSize:"clamp(22px,3.2vw,50px)",fontWeight:500,lineHeight:1.2,marginBottom:24}}>
-              <span style={{color:"#fff",textTransform:"uppercase",letterSpacing:"2px"}}>DHARANITHARAN </span><span style={{color:"#fff"}}>G</span>
+            {/* Name — responsive, wraps on mobile */}
+            <h1 className="hero-name" style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(22px,3.2vw,50px)',fontWeight:500,lineHeight:1.2,marginBottom:24}}>
+              <span style={{color:'#fff',textTransform:'uppercase',letterSpacing:'2px'}}>DHARANITHARAN </span>
+              <span style={{color:'#fff'}}>G</span>
             </h1>
             <div className="la" style={{marginBottom:20}}/>
-            <p style={{fontFamily:"'Inconsolata',monospace",fontSize:11,letterSpacing:2,color:"#f5c842",marginBottom:18,textTransform:"uppercase"}}>{profile.title}</p>
-            <p style={{color:"#f0e6e6",lineHeight:1.85,fontSize:14.5,maxWidth:420,marginBottom:36}}>{profile.bio}</p>
-            <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-              <button className="gbtn" onClick={()=>scrollTo("work")}><span className="gbtn-t">View My Work</span></button>
-              <button className="ghostbtn" onClick={()=>scrollTo("contact")}>Contact Me</button>
+            <p style={{fontFamily:"'Inconsolata',monospace",fontSize:11,letterSpacing:2,color:'#f5c842',marginBottom:18,textTransform:'uppercase'}}>{profile.title}</p>
+            <p style={{color:'#f0e6e6',lineHeight:1.85,fontSize:14.5,maxWidth:420,marginBottom:36}}>{profile.bio}</p>
+            <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+              <button className="gbtn" onClick={()=>scrollTo('work')}><span className="gbtn-t">View My Work</span></button>
+              <button className="ghostbtn" onClick={()=>scrollTo('contact')}>Contact Me</button>
             </div>
           </div>
-          <div data-rid="h2" className="reveal fr d1" style={{display:"flex",flexDirection:"column",alignItems:"center",gap:16}}>
-            <div style={{width:"100%",display:"flex",flexDirection:"column",alignItems:"center"}}>
+
+          {/* RIGHT — bigger square pic */}
+          <div data-rid="h2" className="reveal fr d1" style={{display:'flex',flexDirection:'column',alignItems:'center',gap:16}}>
+            <div style={{width:'100%',display:'flex',flexDirection:'column',alignItems:'center'}}>
+              {/* SQUARE PIC — bigger max-width */}
               <div className="pic-box" onClick={()=>!pic&&picRef.current.click()}>
                 {!pic&&<>
                   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6b2020" strokeWidth="1.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  <span style={{fontFamily:"'Playfair Display',serif",fontSize:16,color:"#7a3535"}}>Upload Profile Photo</span>
-                  <span style={{fontFamily:"'Inconsolata',monospace",fontSize:9,color:"#5a2020",letterSpacing:2}}>CLICK TO BROWSE</span>
+                  <span style={{fontFamily:"'Playfair Display',serif",fontSize:16,color:'#7a3535'}}>Upload Profile Photo</span>
+                  <span style={{fontFamily:"'Inconsolata',monospace",fontSize:9,color:'#5a2020',letterSpacing:2}}>CLICK TO BROWSE</span>
                 </>}
                 {pic&&<img src={pic} alt="Profile"/>}
                 <div className="pic-ov">
-                  <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:"#f5c842",letterSpacing:2,marginBottom:4}}>PROFILE PHOTO</span>
+                  <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:'#f5c842',letterSpacing:2,marginBottom:4}}>PROFILE PHOTO</span>
                   <div className="pic-btns">
-                    <button className="ghostbtn" style={{fontSize:9,padding:"6px 14px"}} onClick={e=>{e.stopPropagation();picRef.current.click();}}>↑ Change</button>
-                    {pic&&<button className="dangerbtn" style={{fontSize:9,padding:"6px 14px"}} onClick={e=>{e.stopPropagation();removePic();}}>✕ Remove</button>}
+                    <button className="ghostbtn" style={{fontSize:9,padding:'6px 14px'}} onClick={e=>{e.stopPropagation();picRef.current.click();}}>↑ Change</button>
+                    {pic&&<button className="dangerbtn" style={{fontSize:9,padding:'6px 14px'}} onClick={e=>{e.stopPropagation();removePic();}}>✕ Remove</button>}
                   </div>
                 </div>
               </div>
-              <input ref={picRef} type="file" accept="image/*" style={{display:"none"}} onChange={handlePic}/>
-              {!pic&&<button className="ghostbtn" style={{width:"100%",maxWidth:360,marginTop:10,textAlign:"center"}} onClick={()=>picRef.current.click()}>↑ Upload Photo</button>}
+              <input ref={picRef} type="file" accept="image/*" style={{display:'none'}} onChange={handlePic}/>
+              {!pic&&<button className="ghostbtn" style={{width:'100%',maxWidth:360,marginTop:10,textAlign:'center'}} onClick={()=>picRef.current.click()}>↑ Upload Photo</button>}
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:2,width:"100%",maxWidth:360,background:"#6b2020"}}>
-              {[[images.length,"Gallery"],["50+","Designs"]].map(([n,l])=>(
+            {/* Stats */}
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:2,width:'100%',maxWidth:360,background:'#6b2020'}}>
+              {[[images.length,'Gallery'],['50+','Designs']].map(([n,l])=>(
                 <div key={l} className="sbox"><div className="snum">{n}</div><div className="slbl">{l}</div></div>
               ))}
             </div>
@@ -535,53 +486,51 @@ function Portfolio() {
         </div>
       </section>
 
-      {/* ════ WORK ════ */}
-      <section id="work" style={{padding:"100px 48px",borderTop:"1px solid #6b2020",background:"#3d1010"}}>
-        <div style={{maxWidth:1080,margin:"0 auto"}}>
-          <div data-rid="w0" className="reveal" style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:48,flexWrap:"wrap",gap:20}}>
+      {/* ════════ WORK ════════ */}
+      <section id="work" style={{padding:'100px 48px',borderTop:'1px solid #6b2020',background:'#3d1010'}}>
+        <div style={{maxWidth:1080,margin:'0 auto'}}>
+          <div data-rid="w0" className="reveal" style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginBottom:48,flexWrap:'wrap',gap:20}}>
             <div>
               <div className="sec-lbl">Selected Work</div>
-              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:"clamp(32px,4vw,56px)",fontWeight:400,lineHeight:1.1,color:"#fff"}}>
-                Design <span style={{fontStyle:"italic",color:"#f5c842"}}>Gallery</span>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(32px,4vw,56px)',fontWeight:400,lineHeight:1.1,color:'#fff'}}>
+                Design <span style={{fontStyle:'italic',color:'#f5c842'}}>Gallery</span>
               </h2>
-              <div style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:"#c9a0a0",marginTop:10,letterSpacing:1}}>
-                {images.length} / 50 images
-                {hasNew&&<span style={{color:"#f5c842",marginLeft:8}}>· {sessionNew.length} new — export to publish</span>}
+              <div style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#c9a0a0',marginTop:10,letterSpacing:1}}>
+                {images.length} / 50 · images are saved automatically · click to expand
               </div>
             </div>
-            <div style={{display:"flex",gap:10,flexWrap:"wrap",alignItems:"center"}}>
-              {hasNew&&(
-                <button className="gbtn" style={{padding:"10px 20px",fontSize:10}} onClick={doExport} disabled={exporting}>
-                  <span className="gbtn-t">{exporting?"Building…":"📥 Export & Download"}</span>
-                </button>
-              )}
+            <div style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'center'}}>
+              {images.length>0&&<button className="ghostbtn" onClick={saveAllImgs}>💾 Save All</button>}
               {images.length<50&&<button className="gbtn" onClick={()=>gallRef.current.click()}><span className="gbtn-t">+ Add Images</span></button>}
             </div>
           </div>
-          <input ref={gallRef} type="file" accept="image/*" multiple style={{display:"none"}} onChange={e=>addImages(e.target.files)}/>
+          <input ref={gallRef} type="file" accept="image/*" multiple style={{display:'none'}} onChange={e=>addImages(e.target.files)}/>
 
           <div data-rid="w1" className="reveal d1">
             {images.length===0?(
-              <div className={`dzone${drag?" ov":""}`}
+              <div className={`dzone${drag?' ov':''}`}
                 onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)}
                 onDrop={e=>{e.preventDefault();setDrag(false);addImages(e.dataTransfer.files);}}
                 onClick={()=>gallRef.current.click()}>
-                <div style={{fontSize:48,color:"#6b2020",marginBottom:18}}>⬡</div>
-                <p style={{fontFamily:"'Playfair Display',serif",fontSize:26,fontWeight:300,color:"#c9a0a0",marginBottom:10}}>Drop your designs here</p>
-                <p style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:"#7a3535",letterSpacing:2}}>click to browse · add images · export to publish</p>
+                <div style={{fontSize:48,color:'#6b2020',marginBottom:18}}>⬡</div>
+                <p style={{fontFamily:"'Playfair Display',serif",fontSize:26,fontWeight:300,color:'#c9a0a0',marginBottom:10}}>Drop your designs here</p>
+                <p style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#7a3535',letterSpacing:2}}>or click to browse · max 50 images · auto-saved</p>
               </div>
             ):(
-              <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:14}}
+              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))',gap:14}}
                 onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)}
                 onDrop={e=>{e.preventDefault();setDrag(false);addImages(e.dataTransfer.files);}}>
                 {images.map((img,idx)=>(
                   <div key={img.id} className="gcrd" onClick={()=>openLb(img,idx)}>
                     <img src={img.src} alt={img.name}/>
-                    {sessionNew.includes(img.id)&&(
-                      <div style={{position:"absolute",top:8,right:8,background:"rgba(245,200,66,.92)",color:"#2d0a0a",padding:"3px 9px",fontFamily:"'Inconsolata',monospace",fontSize:9,letterSpacing:1,fontWeight:700,borderRadius:2}}>
-                        NEW
-                      </div>
-                    )}
+                    {/* SAVE BUTTON — top right corner */}
+                    <button
+                      className={`img-save-btn${savedImgs.has(img.id)?' saved':''}`}
+                      onClick={e=>saveOneImg(img.id,e)}
+                      title="Save this image"
+                    >
+                      <SaveIcon/> {savedImgs.has(img.id)?'Saved':'Save'}
+                    </button>
                     <div className="gcrd-ov">
                       <div className="gcrd-row">
                         <button className="mini-row-btn" onClick={e=>{e.stopPropagation();openLb(img,idx);}}>Expand</button>
@@ -602,93 +551,100 @@ function Portfolio() {
         </div>
       </section>
 
-      {/* ════ ABOUT ════ */}
-      <section id="about" style={{padding:"100px 48px",borderTop:"1px solid #6b2020",background:"#2d0a0a"}}>
-        <div className="agrid" style={{maxWidth:1080,margin:"0 auto",display:"grid",gridTemplateColumns:"1.1fr 1fr",gap:80,alignItems:"start"}}>
+      {/* ════════ ABOUT ════════ */}
+      <section id="about" style={{padding:'100px 48px',borderTop:'1px solid #6b2020',background:'#2d0a0a'}}>
+        <div className="agrid" style={{maxWidth:1080,margin:'0 auto',display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:80,alignItems:'start'}}>
           <div data-rid="a1" className="reveal fl">
             <div className="sec-lbl">About Me</div>
-            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:"clamp(32px,4vw,56px)",fontWeight:400,lineHeight:1.1,marginBottom:28,color:"#fff"}}>
-              Crafting Worlds<br/><span style={{fontStyle:"italic",color:"#f5c842"}}>Through Design</span>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(32px,4vw,56px)',fontWeight:400,lineHeight:1.1,marginBottom:28,color:'#fff'}}>
+              Crafting Worlds<br/><span style={{fontStyle:'italic',color:'#f5c842'}}>Through Design</span>
             </h2>
             <div className="la" style={{marginBottom:24}}/>
-            <p style={{color:"#f0e6e6",lineHeight:1.9,fontSize:14.5,marginBottom:28}}>{profile.bio}</p>
-            <div style={{display:"flex",flexDirection:"column",gap:10}}>
-              {[["◎",profile.location],["◉",profile.email]].map(([icon,val])=>(
-                <div key={val} style={{display:"flex",alignItems:"center",gap:10,color:"#f0e6e6",fontFamily:"'Inconsolata',monospace",fontSize:12}}>
-                  <span style={{color:"#f5c842"}}>{icon}</span>{val}
+            <p style={{color:'#f0e6e6',lineHeight:1.9,fontSize:14.5,marginBottom:28}}>{profile.bio}</p>
+            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              {[['◎',profile.location],['◉',profile.email]].map(([icon,val])=>(
+                <div key={val} style={{display:'flex',alignItems:'center',gap:10,color:'#f0e6e6',fontFamily:"'Inconsolata',monospace",fontSize:12}}>
+                  <span style={{color:'#f5c842'}}>{icon}</span>{val}
                 </div>
               ))}
             </div>
           </div>
           <div data-rid="a2" className="reveal fr d2">
             <div className="sec-lbl" style={{marginBottom:16}}>Skills</div>
-            <div style={{display:"flex",flexWrap:"wrap",gap:8,marginBottom:40}}>
+            <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:40}}>
               {profile.skills.map((s,i)=><span key={i} className="schip">{s}</span>)}
             </div>
             {profile.available&&(
-              <div style={{border:"1px solid rgba(74,222,128,.2)",background:"rgba(74,222,128,.05)",padding:"20px 22px"}}>
-                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+              <div style={{border:'1px solid rgba(74,222,128,.2)',background:'rgba(74,222,128,.05)',padding:'20px 22px'}}>
+                <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10}}>
                   <span className="avdot"/>
-                  <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,letterSpacing:2,color:"#4ade80"}}>OPEN TO OPPORTUNITIES</span>
+                  <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,letterSpacing:2,color:'#4ade80'}}>OPEN TO OPPORTUNITIES</span>
                 </div>
-                <p style={{color:"#c9a0a0",fontSize:12,fontFamily:"'Inconsolata',monospace",lineHeight:1.7}}>Currently accepting freelance projects and full-time roles. Let's build something remarkable.</p>
+                <p style={{color:'#c9a0a0',fontSize:12,fontFamily:"'Inconsolata',monospace",lineHeight:1.7}}>
+                  Currently accepting freelance projects and full-time roles. Let's build something remarkable.
+                </p>
               </div>
             )}
           </div>
         </div>
       </section>
 
-      {/* ════ CONTACT ════ */}
-      <section id="contact" style={{padding:"100px 48px",borderTop:"1px solid #6b2020",background:"#3d1010"}}>
-        <div style={{maxWidth:1080,margin:"0 auto"}}>
+      {/* ════════ CONTACT ════════ */}
+      <section id="contact" style={{padding:'100px 48px',borderTop:'1px solid #6b2020',background:'#3d1010'}}>
+        <div style={{maxWidth:1080,margin:'0 auto'}}>
           <div data-rid="c0" className="reveal" style={{marginBottom:60}}>
             <div className="sec-lbl">Get In Touch</div>
-            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:"clamp(36px,5vw,68px)",fontWeight:400,lineHeight:1.05,color:"#fff"}}>
-              Let's Work <span style={{fontStyle:"italic",color:"#f5c842"}}>Together.</span>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(36px,5vw,68px)',fontWeight:400,lineHeight:1.05,color:'#fff'}}>
+              Let's Work <span style={{fontStyle:'italic',color:'#f5c842'}}>Together.</span>
             </h2>
           </div>
-          <div className="cgrid" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:64,alignItems:"start"}}>
+          <div className="cgrid" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:64,alignItems:'start'}}>
+            {/* Contact Info */}
             <div data-rid="c1" className="reveal fl d1">
               <div className="la" style={{marginBottom:22}}/>
-              <p style={{color:"#f0e6e6",lineHeight:1.85,fontSize:14.5,maxWidth:380,marginBottom:30}}>Open to creative collaborations, brand projects, and meaningful work.</p>
-              <div style={{display:"flex",flexDirection:"column",gap:12}}>
-                <div style={{border:"1px solid #6b2020",padding:"16px 20px",background:"#4a1515"}}>
-                  <div style={{fontFamily:"'Inconsolata',monospace",fontSize:9,letterSpacing:3,color:"#c9a0a0",textTransform:"uppercase",marginBottom:5}}>Email</div>
-                  <div style={{fontSize:14,color:"#f5c842"}}>{profile.email}</div>
+              <p style={{color:'#f0e6e6',lineHeight:1.85,fontSize:14.5,maxWidth:380,marginBottom:30}}>Open to creative collaborations, brand projects, and meaningful work.</p>
+              <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                <div style={{border:'1px solid #6b2020',padding:'16px 20px',background:'#4a1515'}}>
+                  <div style={{fontFamily:"'Inconsolata',monospace",fontSize:9,letterSpacing:3,color:'#c9a0a0',textTransform:'uppercase',marginBottom:5}}>Email</div>
+                  <div style={{fontSize:14,color:'#f5c842'}}>{profile.email}</div>
                 </div>
-                <div style={{border:"1px solid #6b2020",padding:"16px 20px",background:"#4a1515"}}>
-                  <div style={{fontFamily:"'Inconsolata',monospace",fontSize:9,letterSpacing:3,color:"#c9a0a0",textTransform:"uppercase",marginBottom:5}}>Location</div>
-                  <div style={{fontSize:14,color:"#f0e6e6"}}>{profile.location}</div>
+                <div style={{border:'1px solid #6b2020',padding:'16px 20px',background:'#4a1515'}}>
+                  <div style={{fontFamily:"'Inconsolata',monospace",fontSize:9,letterSpacing:3,color:'#c9a0a0',textTransform:'uppercase',marginBottom:5}}>Location</div>
+                  <div style={{fontSize:14,color:'#f0e6e6'}}>{profile.location}</div>
                 </div>
-                <button className="slink" onClick={()=>window.open(`https://instagram.com/${profile.instagram.replace("@","")}`, "_blank")}><IgIcon/><span style={{flex:1}}>Instagram</span><span style={{color:"#f5c842",fontSize:12}}>{profile.instagram}</span></button>
-                <button className="slink" onClick={()=>window.open(profile.linkedin,"_blank")}><LiIcon/><span style={{flex:1}}>LinkedIn — Dharanitharan G</span><span style={{color:"#f5c842",fontSize:12}}>View Profile →</span></button>
+                <button className="slink" onClick={()=>window.open(`https://instagram.com/${profile.instagram.replace('@','')}`, '_blank')}><IgIcon/><span style={{flex:1}}>Instagram</span><span style={{color:'#f5c842',fontSize:12}}>{profile.instagram}</span></button>
+                <button className="slink" onClick={()=>window.open(profile.linkedin,'_blank')}><LiIcon/><span style={{flex:1}}>LinkedIn — Dharanitharan G</span><span style={{color:'#f5c842',fontSize:12}}>View Profile →</span></button>
               </div>
             </div>
+
+            {/* Contact Form */}
             <div data-rid="c2" className="reveal fr d2">
               <div className="sec-lbl" style={{marginBottom:8}}>Let's Connect</div>
-              <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:28,fontWeight:400,color:"#fff",marginBottom:28}}>Send a <span style={{fontStyle:"italic",color:"#f5c842"}}>Message</span></h3>
+              <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:28,fontWeight:400,color:'#fff',marginBottom:28}}>
+                Send a <span style={{fontStyle:'italic',color:'#f5c842'}}>Message</span>
+              </h3>
               {sent?(
-                <div style={{border:"1px solid rgba(74,222,128,.25)",background:"rgba(74,222,128,.05)",padding:"40px 24px",textAlign:"center"}}>
+                <div style={{border:'1px solid rgba(74,222,128,.25)',background:'rgba(74,222,128,.05)',padding:'40px 24px',textAlign:'center'}}>
                   <div style={{fontSize:40,marginBottom:14}}>✓</div>
-                  <p style={{fontFamily:"'Inconsolata',monospace",fontSize:12,color:"#4ade80",letterSpacing:3}}>MESSAGE SENT!</p>
-                  <p style={{color:"#c9a0a0",fontSize:12,marginTop:10,fontFamily:"'Inconsolata',monospace"}}>Thank you for reaching out.</p>
+                  <p style={{fontFamily:"'Inconsolata',monospace",fontSize:12,color:'#4ade80',letterSpacing:3}}>MESSAGE SENT!</p>
+                  <p style={{color:'#c9a0a0',fontSize:12,marginTop:10,fontFamily:"'Inconsolata',monospace"}}>Thank you for reaching out.</p>
                 </div>
               ):(
-                <div style={{display:"flex",flexDirection:"column",gap:16}}>
-                  <div><span className="lbl">Name <span style={{color:"#dc5050"}}>*</span></span><input className="field" placeholder="Your full name" value={form.name} onChange={e=>setForm(p=>({...p,name:e.target.value}))}/></div>
-                  <div><span className="lbl">Email <span style={{color:"#dc5050"}}>*</span></span><input className="field" type="email" placeholder="your@email.com" value={form.email} onChange={e=>setForm(p=>({...p,email:e.target.value}))}/></div>
+                <div style={{display:'flex',flexDirection:'column',gap:16}}>
+                  <div><span className="lbl">Name <span style={{color:'#dc5050'}}>*</span></span><input className="field" placeholder="Your full name" value={form.name} onChange={e=>setForm(p=>({...p,name:e.target.value}))}/></div>
+                  <div><span className="lbl">Email <span style={{color:'#dc5050'}}>*</span></span><input className="field" type="email" placeholder="your@email.com" value={form.email} onChange={e=>setForm(p=>({...p,email:e.target.value}))}/></div>
                   <div><span className="lbl">Subject</span><input className="field" placeholder="What is this about?" value={form.subject} onChange={e=>setForm(p=>({...p,subject:e.target.value}))}/></div>
                   <div>
-                    <span className="lbl">Leave as a Message <span style={{color:"#dc5050"}}>*</span></span>
+                    <span className="lbl">Leave as a Message <span style={{color:'#dc5050'}}>*</span></span>
                     <textarea className="field" style={{minHeight:150}} placeholder="Write your message here… (up to 2,000 characters)" maxLength={MAX_MSG} value={form.message} onChange={e=>setForm(p=>({...p,message:e.target.value}))}/>
                     <div className="char-bar"><div className={`char-fill ${msgClass}`} style={{width:`${(msgLen/MAX_MSG)*100}%`}}/></div>
-                    <div style={{display:"flex",justifyContent:"space-between",marginTop:5}}>
-                      <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:msgClass==="over"?"#ff6060":msgClass==="warn"?"#f59c42":"#7a3535",letterSpacing:1}}>{msgLen.toLocaleString()} / {MAX_MSG.toLocaleString()} characters</span>
-                      {msgLen>0&&<span style={{fontFamily:"'Inconsolata',monospace",fontSize:9,color:"#5a2020"}}>{(MAX_MSG-msgLen).toLocaleString()} remaining</span>}
+                    <div style={{display:'flex',justifyContent:'space-between',marginTop:5}}>
+                      <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:msgClass==='over'?'#ff6060':msgClass==='warn'?'#f59c42':'#7a3535',letterSpacing:1}}>{msgLen.toLocaleString()} / {MAX_MSG.toLocaleString()} characters</span>
+                      {msgLen>0&&<span style={{fontFamily:"'Inconsolata',monospace",fontSize:9,color:'#5a2020'}}>{(MAX_MSG-msgLen).toLocaleString()} remaining</span>}
                     </div>
                   </div>
-                  <div style={{marginTop:20,display:"flex",justifyContent:"center"}}>
-                    <button className="submit-btn" style={{maxWidth:260,padding:"13px 40px"}} onClick={submitForm}><span>Send →</span></button>
+                  <div style={{marginTop:20,display:'flex',justifyContent:'center'}}>
+                    <button className="submit-btn" style={{maxWidth:260,padding:'13px 40px'}} onClick={submitForm}><span>Send →</span></button>
                   </div>
                 </div>
               )}
@@ -698,26 +654,25 @@ function Portfolio() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{padding:"36px 48px",borderTop:"1px solid #6b2020",background:"#1e0505",paddingBottom:hasNew?"90px":"36px"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:12,marginBottom:24}}>
-          <span style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:400,color:"#fff"}}>DHARANITHARAN<span style={{color:"#fff"}}> G</span></span>
-          <div style={{display:"flex",gap:8}}>
-            <button className="ghostbtn" style={{padding:"6px 12px"}} onClick={()=>window.open(`https://instagram.com/${profile.instagram.replace("@","")}`, "_blank")}><IgIcon/></button>
-            <button className="ghostbtn" style={{padding:"6px 12px"}} onClick={()=>window.open(profile.linkedin,"_blank")}><LiIcon/></button>
+      <footer style={{padding:'36px 48px',borderTop:'1px solid #6b2020',background:'#1e0505'}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:12,marginBottom:24}}>
+          <span style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:400,color:'#fff'}}>DHARANITHARAN<span style={{color:'#fff'}}> G</span></span>
+          <div style={{display:'flex',gap:8}}>
+            <button className="ghostbtn" style={{padding:'6px 12px'}} onClick={()=>window.open(`https://instagram.com/${profile.instagram.replace('@','')}`, '_blank')}><IgIcon/></button>
+            <button className="ghostbtn" style={{padding:'6px 12px'}} onClick={()=>window.open(profile.linkedin,'_blank')}><LiIcon/></button>
           </div>
         </div>
-        <div style={{borderTop:"1px solid #3d1010",paddingTop:20,textAlign:"center"}}>
-          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:"#c9a0a0",letterSpacing:2,marginBottom:6}}>© 2026 By Dharanitharan G</div>
-          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:"#7a3535",letterSpacing:2}}>All Rights Reserved</div>
+        <div style={{borderTop:'1px solid #3d1010',paddingTop:20,textAlign:'center'}}>
+          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#c9a0a0',letterSpacing:2,marginBottom:6}}>© 2026 By Dharanitharan G</div>
+          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:'#7a3535',letterSpacing:2}}>All Rights Reserved</div>
         </div>
       </footer>
 
-      </div>
+      </div>{/* end mob-frame */}
     </div>
   );
 }
-ReactDOM.createRoot(document.getElementById("root")).render(<Portfolio/>);
-</script>
+ReactDOM.createRoot(document.getElementById('root')).render(<Portfolio/>);
 </script>
 </body>
 </html>
