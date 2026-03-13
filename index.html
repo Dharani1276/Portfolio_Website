@@ -19,30 +19,33 @@
     ::-webkit-scrollbar-thumb { background: #f5c842; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #e0a830; }
 
-    /* SECTION REVEAL — fires both scroll down AND scroll up */
+    /* ── SMOOTH FADE-SCALE REVEAL ── */
     .reveal {
       opacity: 0;
-      transform: translateY(44px);
-      transition: opacity 0.72s cubic-bezier(.22,.68,0,1.1), transform 0.72s cubic-bezier(.22,.68,0,1.1);
+      transform: translateY(36px) scale(0.97);
+      transition: opacity 0.8s cubic-bezier(.16,1,.3,1), transform 0.8s cubic-bezier(.16,1,.3,1);
     }
-    .reveal.fl { transform: translateX(-44px); }
-    .reveal.fr { transform: translateX(44px); }
-    .reveal.ft { transform: translateY(-44px); }
-    .reveal.vis { opacity: 1 !important; transform: translate(0,0) !important; }
-    .reveal.d1 { transition-delay:.1s }
-    .reveal.d2 { transition-delay:.2s }
-    .reveal.d3 { transition-delay:.3s }
+    .reveal.fl { transform: translateX(-48px) scale(0.97); }
+    .reveal.fr { transform: translateX(48px) scale(0.97); }
+    .reveal.fz { transform: scale(0.92); } /* zoom-in effect */
+    .reveal.vis { opacity:1 !important; transform:translate(0,0) scale(1) !important; }
+    .reveal.d1 { transition-delay:.12s }
+    .reveal.d2 { transition-delay:.24s }
+    .reveal.d3 { transition-delay:.36s }
+    .reveal.d4 { transition-delay:.48s }
 
-    /* WIPE TRANSITION */
-    .wipe {
-      position: fixed; inset: 0; z-index: 9100;
-      background: #140203;
-      transform: scaleY(0); transform-origin: top;
-      pointer-events: none;
-      transition: transform 0.32s cubic-bezier(.77,0,.18,1);
+    /* ── SECTION SHIMMER BORDER on enter ── */
+    @keyframes shimmerBorder {
+      0%   { box-shadow: 0 0 0 0 rgba(245,200,66,0); }
+      40%  { box-shadow: 0 0 0 2px rgba(245,200,66,.5); }
+      100% { box-shadow: 0 0 0 0 rgba(245,200,66,0); }
     }
-    .wipe.show { transform: scaleY(1); transform-origin: top; pointer-events: all; }
-    .wipe.hide { transform: scaleY(0); transform-origin: bottom; }
+    .sec-shimmer.vis { animation: shimmerBorder 1.2s ease forwards; }
+
+    /* ── PAGE WIPE ── */
+    .wipe { position:fixed; inset:0; z-index:9100; background:#0d0101; transform:scaleY(0); transform-origin:top; pointer-events:none; transition:transform 0.3s cubic-bezier(.77,0,.18,1); }
+    .wipe.show { transform:scaleY(1); pointer-events:all; }
+    .wipe.hide { transform:scaleY(0); transform-origin:bottom; }
 
     /* NAV */
     .npill { font-family:'Inconsolata',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#c9a0a0; cursor:pointer; padding:6px 14px; border-radius:20px; transition:all .25s; border:1px solid transparent; }
@@ -77,35 +80,41 @@
     .rmsk { background:none; border:none; color:#7a3535; cursor:pointer; font-size:16px; line-height:1; padding:0; transition:color .2s; }
     .rmsk:hover { color:#ff6060; }
 
-    /* PROFILE PIC — perfect square */
-    .pic-box { width:100%; aspect-ratio:1/1; position:relative; overflow:hidden; border:2px solid #6b2020; background:#3d1010; cursor:pointer; transition:border-color .3s; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
-    .pic-box:hover { border-color:#f5c842; }
+    /* PROFILE PIC — bigger square */
+    .pic-box { width:100%; max-width:360px; aspect-ratio:1/1; position:relative; overflow:hidden; border:2px solid #6b2020; background:#3d1010; cursor:pointer; transition:border-color .3s, box-shadow .3s; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
+    .pic-box:hover { border-color:#f5c842; box-shadow:0 0 32px rgba(245,200,66,.12); }
     .pic-box img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
-    .pic-ov { position:absolute; inset:0; background:rgba(25,3,3,.88); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; opacity:0; transition:opacity .3s; }
+    .pic-ov { position:absolute; inset:0; background:rgba(20,2,2,.88); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; opacity:0; transition:opacity .3s; }
     .pic-box:hover .pic-ov { opacity:1; }
     .pic-btns { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
 
-    /* GALLERY — slightly wider aspect ratio (4:3) */
+    /* SAVE BADGE for gallery images — top-right corner */
+    .img-save-btn { position:absolute; top:8px; right:8px; background:rgba(245,200,66,.92); border:none; color:#2d0a0a; padding:4px 10px; font-family:'Inconsolata',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; font-weight:700; opacity:0; transition:opacity .25s; z-index:5; border-radius:2px; }
+    .gcrd:hover .img-save-btn { opacity:1; }
+    .img-save-btn.saved { background:rgba(74,222,128,.92); color:#0a2010; }
+
+    /* GALLERY CARD */
     .gcrd { position:relative; overflow:hidden; cursor:pointer; background:#4a1515; aspect-ratio:4/3; }
-    .gcrd img { width:100%; height:100%; object-fit:cover; transition:transform .6s cubic-bezier(.25,.46,.45,.94), filter .4s; filter:brightness(.88); display:block; }
-    .gcrd:hover img { transform:scale(1.07); filter:brightness(1); }
-    .gcrd-ov { position:absolute; inset:0; background:linear-gradient(to top,rgba(45,10,10,.9) 0%,transparent 55%); opacity:0; transition:opacity .35s; display:flex; flex-direction:column; justify-content:flex-end; padding:14px; gap:8px; }
+    .gcrd img { width:100%; height:100%; object-fit:cover; transition:transform .6s cubic-bezier(.25,.46,.45,.94), filter .4s; filter:brightness(.85); display:block; }
+    .gcrd:hover img { transform:scale(1.08); filter:brightness(1.05); }
+    .gcrd-ov { position:absolute; inset:0; background:linear-gradient(to top,rgba(30,5,5,.92) 0%,transparent 55%); opacity:0; transition:opacity .35s; display:flex; flex-direction:column; justify-content:flex-end; padding:14px; gap:8px; }
     .gcrd:hover .gcrd-ov { opacity:1; }
     .gcrd-row { display:flex; gap:8px; }
+
     .addcrd { border:2px dashed #6b2020; display:flex; flex-direction:column; align-items:center; justify-content:center; aspect-ratio:4/3; cursor:pointer; color:#7a3535; transition:all .3s; font-family:'Inconsolata',monospace; }
     .addcrd:hover { border-color:#f5c842; color:#f5c842; background:rgba(245,200,66,.04); }
 
     /* MODAL */
-    .mover { position:fixed; inset:0; background:rgba(18,2,2,.97); z-index:500; display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px; }
+    .mover { position:fixed; inset:0; background:rgba(12,1,1,.97); z-index:500; display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px; }
     .mbox { background:#2d0a0a; border:1px solid #6b2020; width:100%; max-width:620px; padding:40px; margin:auto; }
 
     /* LIGHTBOX */
-    .lbov { position:fixed; inset:0; background:rgba(10,2,2,.97); z-index:600; display:flex; align-items:center; justify-content:center; }
+    .lbov { position:fixed; inset:0; background:rgba(8,1,1,.97); z-index:600; display:flex; align-items:center; justify-content:center; }
     .lbbtn { position:absolute; background:rgba(45,10,10,.8); border:1px solid #6b2020; color:#c9a0a0; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; backdrop-filter:blur(4px); border-radius:50%; width:44px; height:44px; }
     .lbbtn:hover { border-color:#f5c842; color:#f5c842; }
 
     /* TOAST */
-    .toast { position:fixed; bottom:28px; right:28px; z-index:800; background:#3d1010; border-left:2px solid #f5c842; padding:13px 20px; font-family:'Inconsolata',monospace; font-size:11px; letter-spacing:1px; color:#f5c842; animation:tIn .3s ease; max-width:280px; line-height:1.4; }
+    .toast { position:fixed; bottom:28px; right:28px; z-index:800; background:#3d1010; border-left:3px solid #f5c842; padding:13px 20px; font-family:'Inconsolata',monospace; font-size:11px; letter-spacing:1px; color:#f5c842; animation:tIn .3s ease; max-width:300px; line-height:1.5; border-radius:0 2px 2px 0; }
     .toast.err { border-left-color:#dc5050; color:#ff8080; }
     @keyframes tIn { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:translateX(0)} }
 
@@ -146,10 +155,27 @@
     .mob-frame { max-width:390px; margin:0 auto; box-shadow:0 0 0 2px #6b2020, 0 0 60px rgba(245,200,66,.07); }
     .mob-frame::before { content:'● ● ●'; display:block; background:#1e0505; color:#6b2020; font-size:9px; letter-spacing:6px; text-align:center; padding:10px; border-bottom:1px solid #3d1010; font-family:'Inconsolata',monospace; }
 
-    /* RESPONSIVE */
-    @media(max-width:900px){ .hgrid{grid-template-columns:1fr!important} .agrid{grid-template-columns:1fr!important} .cgrid{grid-template-columns:1fr!important} .nav-links{display:none!important} }
-    @media(max-width:600px){ nav{padding:0 14px!important} section{padding-left:18px!important;padding-right:18px!important} footer{padding:18px!important} .mbox{padding:22px!important} }
-    @media(max-width:420px){ .vtog{display:none!important} }
+    /* RESPONSIVE — mobile one by one stacking */
+    @media(max-width:900px) {
+      .hgrid { grid-template-columns:1fr !important; }
+      .agrid { grid-template-columns:1fr !important; }
+      .cgrid { grid-template-columns:1fr !important; }
+      .nav-links { display:none !important; }
+    }
+    @media(max-width:768px) {
+      .pic-box { max-width:100% !important; }
+      section { padding:60px 20px !important; }
+      .hgrid > *:first-child { order:1; }
+      .hgrid > *:last-child  { order:2; }
+      .hero-name { font-size: clamp(20px,7vw,36px) !important; white-space:normal !important; }
+    }
+    @media(max-width:600px) {
+      nav { padding:0 14px !important; }
+      footer { padding:18px !important; }
+      .mbox { padding:22px !important; }
+      .hgrid { gap:32px !important; }
+    }
+    @media(max-width:420px) { .vtog { display:none !important; } }
   </style>
 </head>
 <body>
@@ -165,19 +191,25 @@ const DEFAULTS = {
   instagram:"@dharani.designs_12", linkedin:"https://www.linkedin.com/in/dharani-tharan-36982025b"
 };
 
-const IgIcon  = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>;
-const LiIcon  = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>;
-const CL      = ()=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="15,18 9,12 15,6"/></svg>;
-const CR      = ()=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="9,18 15,12 9,6"/></svg>;
-const XI      = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
-const DIcon   = ()=><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>;
-const MIcon   = ()=><svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="3"/></svg>;
+/* ── ICONS ── */
+const IgIcon = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>;
+const LiIcon = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>;
+const CL     = ()=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="15,18 9,12 15,6"/></svg>;
+const CR     = ()=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="9,18 15,12 9,6"/></svg>;
+const XI     = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+const DIcon  = ()=><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>;
+const MIcon  = ()=><svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="3"/></svg>;
+const SaveIcon = ()=><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>;
 
 function Portfolio() {
-  const sv = (k,d)=>{ try{const s=localStorage.getItem(k);return s?JSON.parse(s):d;}catch(e){return d;} };
+  const sv  = (k,d)=>{ try{const s=localStorage.getItem(k);return s?JSON.parse(s):d;}catch(e){return d;} };
+  const svR = (k,d)=>{ try{const s=localStorage.getItem(k);return s?s:d;}catch(e){return d;} };
+
   const [profile,  setProfile ] = useState(()=>sv("p_pr",DEFAULTS));
-  const [pic,      setPic     ] = useState(()=>{try{return localStorage.getItem("p_pic")||null;}catch(e){return null;}});
-  const [images,   setImages  ] = useState([]);
+  const [pic,      setPic     ] = useState(()=>{ try{return localStorage.getItem("p_pic")||null;}catch(e){return null;} });
+  /* Images now load from localStorage on start */
+  const [images,   setImages  ] = useState(()=>sv("p_imgs",[]));
+  const [savedImgs,setSavedImgs] = useState(()=>{ const s=sv("p_imgs",[]); return new Set(s.map(i=>i.id)); });
   const [editing,  setEditing ] = useState(false);
   const [draft,    setDraft   ] = useState(()=>sv("p_pr",DEFAULTS));
   const [skillIn,  setSkillIn ] = useState("");
@@ -193,18 +225,15 @@ function Portfolio() {
   const [revealed, setRevealed] = useState({});
   const picRef = useRef(); const gallRef = useRef(); const tRef = useRef();
 
-  /* REVEAL OBSERVER — triggers on scroll both directions */
+  /* ── REVEAL OBSERVER ── */
   useEffect(()=>{
     const obs = new IntersectionObserver(entries=>{
-      entries.forEach(e=>{
-        setRevealed(v=>({...v,[e.target.dataset.rid]:e.isIntersecting}));
-      });
-    },{threshold:0.13});
+      entries.forEach(e=>{ setRevealed(v=>({...v,[e.target.dataset.rid]:e.isIntersecting})); });
+    },{threshold:0.1});
     document.querySelectorAll('[data-rid]').forEach(el=>obs.observe(el));
     return ()=>obs.disconnect();
   },[]);
 
-  /* Apply / remove vis class */
   useEffect(()=>{
     Object.entries(revealed).forEach(([rid,isVis])=>{
       document.querySelectorAll(`[data-rid="${rid}"]`).forEach(el=>{
@@ -213,22 +242,23 @@ function Portfolio() {
     });
   },[revealed]);
 
-  /* Active section */
+  /* ── ACTIVE SECTION ── */
   useEffect(()=>{
     const obs=new IntersectionObserver(es=>{
       es.forEach(e=>{if(e.isIntersecting)setActiveS(e.target.id);});
-    },{threshold:0.3});
+    },{threshold:0.25});
     ['hero','work','about','contact'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
     return ()=>obs.disconnect();
   },[]);
 
-  const toast$ = (msg,err=false)=>{ clearTimeout(tRef.current); setToast({msg,err}); tRef.current=setTimeout(()=>setToast(null),3200); };
+  const toast$ = (msg,err=false)=>{ clearTimeout(tRef.current); setToast({msg,err}); tRef.current=setTimeout(()=>setToast(null),3000); };
 
   const scrollTo = id=>{
     setWipe(true);
-    setTimeout(()=>{ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); setActiveS(id); setTimeout(()=>setWipe(false),380); },300);
+    setTimeout(()=>{ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); setActiveS(id); setTimeout(()=>setWipe(false),360); },280);
   };
 
+  /* ── PROFILE PIC ── */
   const handlePic = e=>{
     const f=e.target.files[0]; if(!f||!f.type.startsWith('image/'))return;
     const r=new FileReader();
@@ -237,35 +267,66 @@ function Portfolio() {
   };
   const removePic=()=>{ setPic(null); try{localStorage.removeItem('p_pic');}catch(e){} toast$('Photo removed'); };
 
-  const addImages=useCallback(files=>{
+  /* ── GALLERY — save images to localStorage so they persist on refresh ── */
+  const persistImages = (imgs) => {
+    try { localStorage.setItem('p_imgs', JSON.stringify(imgs)); } catch(e) {
+      toast$('Storage full — some images may not save', true);
+    }
+  };
+
+  const addImages = useCallback(files=>{
     const space=50-images.length; if(space<=0)return toast$('Max 50 images',true);
     const valid=Array.from(files).filter(f=>f.type.startsWith('image/')).slice(0,space);
     if(!valid.length)return toast$('No valid images',true);
     Promise.all(valid.map(f=>new Promise(res=>{
-      const r=new FileReader(); r.onload=ev=>res({src:ev.target.result,name:f.name,id:Math.random().toString(36).slice(2)}); r.readAsDataURL(f);
-    }))).then(imgs=>{ setImages(p=>[...p,...imgs]); toast$(`${imgs.length} image${imgs.length>1?'s':''} added ✓`); });
+      const r=new FileReader();
+      r.onload=ev=>res({src:ev.target.result,name:f.name,id:Math.random().toString(36).slice(2)});
+      r.readAsDataURL(f);
+    }))).then(imgs=>{
+      setImages(prev=>{
+        const next=[...prev,...imgs];
+        persistImages(next);
+        setSavedImgs(new Set(next.map(i=>i.id)));
+        return next;
+      });
+      toast$(`${imgs.length} image${imgs.length>1?'s':''} added & saved ✓`);
+    });
   },[images.length]);
 
-  const removeImg=id=>{ setImages(p=>p.filter(i=>i.id!==id)); setLb(null); toast$('Image removed'); };
-  const openLb=(img,idx)=>{ setLb(img); setLbIdx(idx); };
-  const lbNav=dir=>{ const n=(lbIdx+dir+images.length)%images.length; setLb(images[n]); setLbIdx(n); };
+  /* Save a single image explicitly */
+  const saveOneImg = (id, e)=>{
+    e.stopPropagation();
+    setSavedImgs(prev=>{ const n=new Set(prev); n.add(id); return n; });
+    persistImages(images);
+    toast$('Image saved ✓');
+  };
+
+  /* Save all gallery images button */
+  const saveAllImgs = ()=>{ persistImages(images); setSavedImgs(new Set(images.map(i=>i.id))); toast$(`All ${images.length} images saved ✓`); };
+
+  const removeImg = id=>{ setImages(p=>{ const n=p.filter(i=>i.id!==id); persistImages(n); return n; }); setLb(null); toast$('Image removed'); };
+  const openLb = (img,idx)=>{ setLb(img); setLbIdx(idx); };
+  const lbNav  = dir=>{ const n=(lbIdx+dir+images.length)%images.length; setLb(images[n]); setLbIdx(n); };
 
   useEffect(()=>{
     const fn=e=>{ if(!lb)return; if(e.key==='Escape')setLb(null); if(e.key==='ArrowLeft')lbNav(-1); if(e.key==='ArrowRight')lbNav(1); };
     window.addEventListener('keydown',fn); return ()=>window.removeEventListener('keydown',fn);
   },[lb,lbIdx,images]);
 
+  /* ── SAVE PROFILE ── */
   const saveEdit=()=>{ setProfile(draft); try{localStorage.setItem('p_pr',JSON.stringify(draft));}catch(e){} setEditing(false); toast$('Changes saved ✓'); };
 
+  /* ── CONTACT FORM ── */
   const submitForm=()=>{
     if(!form.name||!form.email||!form.message)return toast$('Please fill all required fields',true);
     setSent(true); toast$('Message sent! ✓');
     setTimeout(()=>{ setSent(false); setForm({name:'',email:'',subject:'',message:''}); },3500);
   };
 
-  const msgLen=form.message.length;
-  const msgClass=msgLen>1800?'over':msgLen>1400?'warn':'';
+  const msgLen  = form.message.length;
+  const msgClass= msgLen>1800?'over':msgLen>1400?'warn':'';
 
+  /* ── RENDER ── */
   return (
     <div style={{background:'#2d0a0a',color:'#fff',minHeight:'100vh',fontFamily:'Georgia,serif',overflowX:'hidden'}}>
 
@@ -275,11 +336,14 @@ function Portfolio() {
       {/* TOAST */}
       {toast&&<div className={`toast${toast.err?' err':''}`}>{toast.msg}</div>}
 
-      {/* LIGHTBOX */}
+      {/* ── LIGHTBOX ── */}
       {lb&&(
         <div className="lbov" onClick={()=>setLb(null)}>
           <button className="lbbtn" style={{top:18,right:18}} onClick={()=>setLb(null)}><XI/></button>
-          {images.length>1&&<><button className="lbbtn" style={{left:16}} onClick={e=>{e.stopPropagation();lbNav(-1);}}><CL/></button><button className="lbbtn" style={{right:16}} onClick={e=>{e.stopPropagation();lbNav(1);}}><CR/></button></>}
+          {images.length>1&&<>
+            <button className="lbbtn" style={{left:16}} onClick={e=>{e.stopPropagation();lbNav(-1);}}><CL/></button>
+            <button className="lbbtn" style={{right:16}} onClick={e=>{e.stopPropagation();lbNav(1);}}><CR/></button>
+          </>}
           <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:16,maxWidth:'92vw'}} onClick={e=>e.stopPropagation()}>
             <img src={lb.src} alt={lb.name} style={{maxWidth:'88vw',maxHeight:'82vh',objectFit:'contain'}}/>
             <div style={{display:'flex',gap:14,alignItems:'center'}}>
@@ -290,7 +354,7 @@ function Portfolio() {
         </div>
       )}
 
-      {/* EDIT MODAL */}
+      {/* ── EDIT MODAL ── */}
       {editing&&(
         <div className="mover" onClick={()=>setEditing(false)}>
           <div className="mbox" onClick={e=>e.stopPropagation()}>
@@ -337,8 +401,8 @@ function Portfolio() {
         </div>
       )}
 
-      {/* NAV */}
-      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:200,padding:'0 28px',height:64,display:'flex',alignItems:'center',justifyContent:'space-between',gap:14,background:'rgba(20,3,3,.97)',backdropFilter:'blur(16px)',borderBottom:'1px solid #6b2020'}}>
+      {/* ── NAV ── */}
+      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:200,padding:'0 28px',height:64,display:'flex',alignItems:'center',justifyContent:'space-between',gap:12,background:'rgba(18,2,2,.97)',backdropFilter:'blur(18px)',borderBottom:'1px solid #6b2020'}}>
         <div style={{fontFamily:"'Playfair Display',serif",fontSize:19,fontWeight:400,letterSpacing:1,cursor:'pointer',color:'#fff',flexShrink:0}} onClick={()=>scrollTo('hero')}>
           DHARANITHARAN<span style={{color:'#fff'}}> G</span>
         </div>
@@ -347,11 +411,10 @@ function Portfolio() {
             <span key={id} className={`npill${activeS===id?' act':''}`} onClick={()=>scrollTo(id)}>{l}</span>
           ))}
         </div>
-        {/* Desktop/Mobile toggle + Edit — same row, clear spacing */}
         <div style={{display:'flex',alignItems:'center',gap:16,flexShrink:0}}>
           <div className="vtog">
-            <button className={`vbtn${view==='desktop'?' on':''}`} onClick={()=>setView('desktop')} title="Desktop view"><DIcon/> Desktop</button>
-            <button className={`vbtn${view==='mobile'?' on':''}`} onClick={()=>setView('mobile')} title="Mobile view"><MIcon/> Mobile</button>
+            <button className={`vbtn${view==='desktop'?' on':''}`} onClick={()=>setView('desktop')}><DIcon/> Desktop</button>
+            <button className={`vbtn${view==='mobile'?' on':''}`}  onClick={()=>setView('mobile')} ><MIcon/> Mobile</button>
           </div>
           <button className="gbtn" style={{fontSize:10,padding:'8px 20px'}} onClick={()=>{setDraft({...profile});setEditing(true);}}>
             <span className="gbtn-t">Edit Profile</span>
@@ -359,24 +422,28 @@ function Portfolio() {
         </div>
       </nav>
 
-      {/* MOBILE FRAME WRAPPER */}
+      {/* ── MOBILE FRAME WRAPPER ── */}
       <div className={view==='mobile'?'mob-frame':''}>
 
-      {/* ── HERO ── */}
-      <section id="hero" style={{minHeight:'100vh',display:'flex',alignItems:'center',padding:'100px 48px 60px',position:'relative',overflow:'hidden',background:'linear-gradient(135deg,#2d0a0a 0%,#3d1010 50%,#2d0a0a 100%)'}}>
-        <div style={{position:'absolute',top:'10%',right:'5%',width:400,height:400,borderRadius:'50%',background:'radial-gradient(circle,rgba(245,200,66,.07) 0%,transparent 70%)',pointerEvents:'none'}}/>
-        <div style={{position:'absolute',bottom:'20%',left:'3%',width:1,height:230,background:'linear-gradient(to bottom,transparent,rgba(245,200,66,.35),transparent)',pointerEvents:'none'}}/>
-        <div className="hgrid" style={{maxWidth:1080,width:'100%',margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:72,alignItems:'center'}}>
+      {/* ════════ HERO ════════ */}
+      <section id="hero" style={{minHeight:'100vh',display:'flex',alignItems:'center',padding:'100px 48px 60px',position:'relative',overflow:'hidden',background:'linear-gradient(135deg,#2d0a0a 0%,#3d1010 55%,#2d0a0a 100%)'}}>
+        <div style={{position:'absolute',top:'8%',right:'4%',width:440,height:440,borderRadius:'50%',background:'radial-gradient(circle,rgba(245,200,66,.07) 0%,transparent 70%)',pointerEvents:'none'}}/>
+        <div style={{position:'absolute',bottom:'18%',left:'3%',width:1,height:240,background:'linear-gradient(to bottom,transparent,rgba(245,200,66,.3),transparent)',pointerEvents:'none'}}/>
+
+        <div className="hgrid" style={{maxWidth:1080,width:'100%',margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:64,alignItems:'center'}}>
           {/* LEFT */}
           <div data-rid="h1" className="reveal fl">
             {profile.available&&(
               <div style={{display:'inline-flex',alignItems:'center',marginBottom:28,background:'rgba(74,222,128,.06)',border:'1px solid rgba(74,222,128,.2)',padding:'6px 14px'}}>
-                <span className="avdot"/><span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,letterSpacing:2,color:'#4ade80'}}>AVAILABLE FOR WORK</span>
+                <span className="avdot"/>
+                <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,letterSpacing:2,color:'#4ade80'}}>AVAILABLE FOR WORK</span>
               </div>
             )}
             <div className="sec-lbl">Creative Portfolio</div>
-            <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(24px,3.2vw,50px)',fontWeight:500,lineHeight:1.15,marginBottom:24,whiteSpace:'nowrap'}}>
-              <span style={{color:'#fff',textTransform:'uppercase',letterSpacing:'2px'}}>DHARANITHARAN </span><span style={{color:'#fff'}}>G</span>
+            {/* Name — responsive, wraps on mobile */}
+            <h1 className="hero-name" style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(22px,3.2vw,50px)',fontWeight:500,lineHeight:1.2,marginBottom:24}}>
+              <span style={{color:'#fff',textTransform:'uppercase',letterSpacing:'2px'}}>DHARANITHARAN </span>
+              <span style={{color:'#fff'}}>G</span>
             </h1>
             <div className="la" style={{marginBottom:20}}/>
             <p style={{fontFamily:"'Inconsolata',monospace",fontSize:11,letterSpacing:2,color:'#f5c842',marginBottom:18,textTransform:'uppercase'}}>{profile.title}</p>
@@ -386,11 +453,17 @@ function Portfolio() {
               <button className="ghostbtn" onClick={()=>scrollTo('contact')}>Contact Me</button>
             </div>
           </div>
-          {/* RIGHT — square pic */}
+
+          {/* RIGHT — bigger square pic */}
           <div data-rid="h2" className="reveal fr d1" style={{display:'flex',flexDirection:'column',alignItems:'center',gap:16}}>
-            <div style={{width:'100%',maxWidth:320}}>
+            <div style={{width:'100%',display:'flex',flexDirection:'column',alignItems:'center'}}>
+              {/* SQUARE PIC — bigger max-width */}
               <div className="pic-box" onClick={()=>!pic&&picRef.current.click()}>
-                {!pic&&<><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#6b2020" strokeWidth="1.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span style={{fontFamily:"'Playfair Display',serif",fontSize:15,color:'#7a3535'}}>Upload Profile Photo</span><span style={{fontFamily:"'Inconsolata',monospace",fontSize:9,color:'#5a2020',letterSpacing:2}}>CLICK TO BROWSE</span></>}
+                {!pic&&<>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6b2020" strokeWidth="1.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span style={{fontFamily:"'Playfair Display',serif",fontSize:16,color:'#7a3535'}}>Upload Profile Photo</span>
+                  <span style={{fontFamily:"'Inconsolata',monospace",fontSize:9,color:'#5a2020',letterSpacing:2}}>CLICK TO BROWSE</span>
+                </>}
                 {pic&&<img src={pic} alt="Profile"/>}
                 <div className="pic-ov">
                   <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:'#f5c842',letterSpacing:2,marginBottom:4}}>PROFILE PHOTO</span>
@@ -401,9 +474,10 @@ function Portfolio() {
                 </div>
               </div>
               <input ref={picRef} type="file" accept="image/*" style={{display:'none'}} onChange={handlePic}/>
-              {!pic&&<button className="ghostbtn" style={{width:'100%',marginTop:10,textAlign:'center'}} onClick={()=>picRef.current.click()}>↑ Upload Photo</button>}
+              {!pic&&<button className="ghostbtn" style={{width:'100%',maxWidth:360,marginTop:10,textAlign:'center'}} onClick={()=>picRef.current.click()}>↑ Upload Photo</button>}
             </div>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:2,width:'100%',maxWidth:320,background:'#6b2020'}}>
+            {/* Stats */}
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:2,width:'100%',maxWidth:360,background:'#6b2020'}}>
               {[[images.length,'Gallery'],['50+','Designs']].map(([n,l])=>(
                 <div key={l} className="sbox"><div className="snum">{n}</div><div className="slbl">{l}</div></div>
               ))}
@@ -412,76 +486,120 @@ function Portfolio() {
         </div>
       </section>
 
-      {/* ── WORK ── */}
+      {/* ════════ WORK ════════ */}
       <section id="work" style={{padding:'100px 48px',borderTop:'1px solid #6b2020',background:'#3d1010'}}>
         <div style={{maxWidth:1080,margin:'0 auto'}}>
           <div data-rid="w0" className="reveal" style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginBottom:48,flexWrap:'wrap',gap:20}}>
             <div>
               <div className="sec-lbl">Selected Work</div>
-              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(36px,4vw,56px)',fontWeight:400,lineHeight:1.1,color:'#fff'}}>Design <span style={{fontStyle:'italic',color:'#f5c842'}}>Gallery</span></h2>
-              <div style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#c9a0a0',marginTop:10,letterSpacing:1}}>{images.length} / 50 · click to expand · keyboard arrows to navigate</div>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(32px,4vw,56px)',fontWeight:400,lineHeight:1.1,color:'#fff'}}>
+                Design <span style={{fontStyle:'italic',color:'#f5c842'}}>Gallery</span>
+              </h2>
+              <div style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#c9a0a0',marginTop:10,letterSpacing:1}}>
+                {images.length} / 50 · images are saved automatically · click to expand
+              </div>
             </div>
-            {images.length<50&&<button className="gbtn" onClick={()=>gallRef.current.click()}><span className="gbtn-t">+ Add Images</span></button>}
+            <div style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'center'}}>
+              {images.length>0&&<button className="ghostbtn" onClick={saveAllImgs}>💾 Save All</button>}
+              {images.length<50&&<button className="gbtn" onClick={()=>gallRef.current.click()}><span className="gbtn-t">+ Add Images</span></button>}
+            </div>
           </div>
           <input ref={gallRef} type="file" accept="image/*" multiple style={{display:'none'}} onChange={e=>addImages(e.target.files)}/>
+
           <div data-rid="w1" className="reveal d1">
             {images.length===0?(
-              <div className={`dzone${drag?' ov':''}`} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);addImages(e.dataTransfer.files);}} onClick={()=>gallRef.current.click()}>
+              <div className={`dzone${drag?' ov':''}`}
+                onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)}
+                onDrop={e=>{e.preventDefault();setDrag(false);addImages(e.dataTransfer.files);}}
+                onClick={()=>gallRef.current.click()}>
                 <div style={{fontSize:48,color:'#6b2020',marginBottom:18}}>⬡</div>
                 <p style={{fontFamily:"'Playfair Display',serif",fontSize:26,fontWeight:300,color:'#c9a0a0',marginBottom:10}}>Drop your designs here</p>
-                <p style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#7a3535',letterSpacing:2}}>or click to browse · max 50 images</p>
+                <p style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#7a3535',letterSpacing:2}}>or click to browse · max 50 images · auto-saved</p>
               </div>
             ):(
-              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))',gap:14}} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);addImages(e.dataTransfer.files);}}>
+              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))',gap:14}}
+                onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)}
+                onDrop={e=>{e.preventDefault();setDrag(false);addImages(e.dataTransfer.files);}}>
                 {images.map((img,idx)=>(
                   <div key={img.id} className="gcrd" onClick={()=>openLb(img,idx)}>
                     <img src={img.src} alt={img.name}/>
-                    <div className="gcrd-ov"><div className="gcrd-row"><button className="mini-row-btn" onClick={e=>{e.stopPropagation();openLb(img,idx);}}>Expand</button><button className="mini-row-btn rm" onClick={e=>{e.stopPropagation();removeImg(img.id);}}>✕ Remove</button></div></div>
+                    {/* SAVE BUTTON — top right corner */}
+                    <button
+                      className={`img-save-btn${savedImgs.has(img.id)?' saved':''}`}
+                      onClick={e=>saveOneImg(img.id,e)}
+                      title="Save this image"
+                    >
+                      <SaveIcon/> {savedImgs.has(img.id)?'Saved':'Save'}
+                    </button>
+                    <div className="gcrd-ov">
+                      <div className="gcrd-row">
+                        <button className="mini-row-btn" onClick={e=>{e.stopPropagation();openLb(img,idx);}}>Expand</button>
+                        <button className="mini-row-btn rm" onClick={e=>{e.stopPropagation();removeImg(img.id);}}>✕ Remove</button>
+                      </div>
+                    </div>
                   </div>
                 ))}
-                {images.length<50&&<div className="addcrd" onClick={()=>gallRef.current.click()}><span style={{fontSize:26,marginBottom:6}}>+</span><span style={{fontSize:9,letterSpacing:3}}>ADD MORE</span></div>}
+                {images.length<50&&(
+                  <div className="addcrd" onClick={()=>gallRef.current.click()}>
+                    <span style={{fontSize:26,marginBottom:6}}>+</span>
+                    <span style={{fontSize:9,letterSpacing:3}}>ADD MORE</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
       </section>
 
-      {/* ── ABOUT ── */}
+      {/* ════════ ABOUT ════════ */}
       <section id="about" style={{padding:'100px 48px',borderTop:'1px solid #6b2020',background:'#2d0a0a'}}>
         <div className="agrid" style={{maxWidth:1080,margin:'0 auto',display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:80,alignItems:'start'}}>
           <div data-rid="a1" className="reveal fl">
             <div className="sec-lbl">About Me</div>
-            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(36px,4vw,56px)',fontWeight:400,lineHeight:1.1,marginBottom:28,color:'#fff'}}>Crafting Worlds<br/><span style={{fontStyle:'italic',color:'#f5c842'}}>Through Design</span></h2>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(32px,4vw,56px)',fontWeight:400,lineHeight:1.1,marginBottom:28,color:'#fff'}}>
+              Crafting Worlds<br/><span style={{fontStyle:'italic',color:'#f5c842'}}>Through Design</span>
+            </h2>
             <div className="la" style={{marginBottom:24}}/>
             <p style={{color:'#f0e6e6',lineHeight:1.9,fontSize:14.5,marginBottom:28}}>{profile.bio}</p>
             <div style={{display:'flex',flexDirection:'column',gap:10}}>
               {[['◎',profile.location],['◉',profile.email]].map(([icon,val])=>(
-                <div key={val} style={{display:'flex',alignItems:'center',gap:10,color:'#f0e6e6',fontFamily:"'Inconsolata',monospace",fontSize:12}}><span style={{color:'#f5c842'}}>{icon}</span>{val}</div>
+                <div key={val} style={{display:'flex',alignItems:'center',gap:10,color:'#f0e6e6',fontFamily:"'Inconsolata',monospace",fontSize:12}}>
+                  <span style={{color:'#f5c842'}}>{icon}</span>{val}
+                </div>
               ))}
             </div>
           </div>
           <div data-rid="a2" className="reveal fr d2">
             <div className="sec-lbl" style={{marginBottom:16}}>Skills</div>
-            <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:40}}>{profile.skills.map((s,i)=><span key={i} className="schip">{s}</span>)}</div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:40}}>
+              {profile.skills.map((s,i)=><span key={i} className="schip">{s}</span>)}
+            </div>
             {profile.available&&(
               <div style={{border:'1px solid rgba(74,222,128,.2)',background:'rgba(74,222,128,.05)',padding:'20px 22px'}}>
-                <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10}}><span className="avdot"/><span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,letterSpacing:2,color:'#4ade80'}}>OPEN TO OPPORTUNITIES</span></div>
-                <p style={{color:'#c9a0a0',fontSize:12,fontFamily:"'Inconsolata',monospace",lineHeight:1.7}}>Currently accepting freelance projects and full-time roles. Let's build something remarkable.</p>
+                <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10}}>
+                  <span className="avdot"/>
+                  <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,letterSpacing:2,color:'#4ade80'}}>OPEN TO OPPORTUNITIES</span>
+                </div>
+                <p style={{color:'#c9a0a0',fontSize:12,fontFamily:"'Inconsolata',monospace",lineHeight:1.7}}>
+                  Currently accepting freelance projects and full-time roles. Let's build something remarkable.
+                </p>
               </div>
             )}
           </div>
         </div>
       </section>
 
-      {/* ── CONTACT ── */}
+      {/* ════════ CONTACT ════════ */}
       <section id="contact" style={{padding:'100px 48px',borderTop:'1px solid #6b2020',background:'#3d1010'}}>
         <div style={{maxWidth:1080,margin:'0 auto'}}>
           <div data-rid="c0" className="reveal" style={{marginBottom:60}}>
             <div className="sec-lbl">Get In Touch</div>
-            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(40px,5vw,68px)',fontWeight:400,lineHeight:1.05,color:'#fff'}}>Let's Work <span style={{fontStyle:'italic',color:'#f5c842'}}>Together.</span></h2>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(36px,5vw,68px)',fontWeight:400,lineHeight:1.05,color:'#fff'}}>
+              Let's Work <span style={{fontStyle:'italic',color:'#f5c842'}}>Together.</span>
+            </h2>
           </div>
           <div className="cgrid" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:64,alignItems:'start'}}>
-            {/* Info */}
+            {/* Contact Info */}
             <div data-rid="c1" className="reveal fl d1">
               <div className="la" style={{marginBottom:22}}/>
               <p style={{color:'#f0e6e6',lineHeight:1.85,fontSize:14.5,maxWidth:380,marginBottom:30}}>Open to creative collaborations, brand projects, and meaningful work.</p>
@@ -498,10 +616,13 @@ function Portfolio() {
                 <button className="slink" onClick={()=>window.open(profile.linkedin,'_blank')}><LiIcon/><span style={{flex:1}}>LinkedIn — Dharanitharan G</span><span style={{color:'#f5c842',fontSize:12}}>View Profile →</span></button>
               </div>
             </div>
-            {/* FORM */}
+
+            {/* Contact Form */}
             <div data-rid="c2" className="reveal fr d2">
               <div className="sec-lbl" style={{marginBottom:8}}>Let's Connect</div>
-              <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:28,fontWeight:400,color:'#fff',marginBottom:28}}>Send a <span style={{fontStyle:'italic',color:'#f5c842'}}>Message</span></h3>
+              <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:28,fontWeight:400,color:'#fff',marginBottom:28}}>
+                Send a <span style={{fontStyle:'italic',color:'#f5c842'}}>Message</span>
+              </h3>
               {sent?(
                 <div style={{border:'1px solid rgba(74,222,128,.25)',background:'rgba(74,222,128,.05)',padding:'40px 24px',textAlign:'center'}}>
                   <div style={{fontSize:40,marginBottom:14}}>✓</div>
@@ -522,7 +643,9 @@ function Portfolio() {
                       {msgLen>0&&<span style={{fontFamily:"'Inconsolata',monospace",fontSize:9,color:'#5a2020'}}>{(MAX_MSG-msgLen).toLocaleString()} remaining</span>}
                     </div>
                   </div>
-                  <div style={{marginTop:"20px",display:"flex",justifyContent:"center"}}><button className="submit-btn" style={{maxWidth:"260px",padding:"13px 40px"}} onClick={submitForm}><span>Send →</span></button></div>
+                  <div style={{marginTop:20,display:'flex',justifyContent:'center'}}>
+                    <button className="submit-btn" style={{maxWidth:260,padding:'13px 40px'}} onClick={submitForm}><span>Send →</span></button>
+                  </div>
                 </div>
               )}
             </div>
@@ -530,9 +653,8 @@ function Portfolio() {
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* ── FOOTER ── */}
       <footer style={{padding:'36px 48px',borderTop:'1px solid #6b2020',background:'#1e0505'}}>
-        {/* Top row: logo left, social right */}
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:12,marginBottom:24}}>
           <span style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:400,color:'#fff'}}>DHARANITHARAN<span style={{color:'#fff'}}> G</span></span>
           <div style={{display:'flex',gap:8}}>
@@ -540,17 +662,13 @@ function Portfolio() {
             <button className="ghostbtn" style={{padding:'6px 12px'}} onClick={()=>window.open(profile.linkedin,'_blank')}><LiIcon/></button>
           </div>
         </div>
-        {/* Center copyright — 2 rows */}
         <div style={{borderTop:'1px solid #3d1010',paddingTop:20,textAlign:'center'}}>
-          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#c9a0a0',letterSpacing:2,marginBottom:6}}>
-            © 2026 By Dharanitharan G
-          </div>
-          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:'#7a3535',letterSpacing:2}}>
-            All Rights Reserved
-          </div>
+          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#c9a0a0',letterSpacing:2,marginBottom:6}}>© 2026 By Dharanitharan G</div>
+          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:'#7a3535',letterSpacing:2}}>All Rights Reserved</div>
         </div>
       </footer>
-      </div>
+
+      </div>{/* end mob-frame */}
     </div>
   );
 }
@@ -558,3 +676,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Portfolio/>);
 </script>
 </body>
 </html>
+
