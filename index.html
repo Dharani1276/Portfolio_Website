@@ -13,524 +13,548 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    body { background: #2d0a0a; }
- 
-    /* SCROLLBAR — thicker */
+    body { background: #2d0a0a; overflow-x: hidden; }
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: #1e0505; }
     ::-webkit-scrollbar-thumb { background: #f5c842; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #e0a830; }
- 
-    .npill { font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #c9a0a0; cursor: pointer; padding: 6px 14px; border-radius: 20px; transition: all .25s; border: 1px solid transparent; }
-    .npill:hover { color: #f5c842; }
-    .npill.act { color: #f5c842; border-color: rgba(245,200,66,.4); background: rgba(245,200,66,.08); }
-    .gbtn { background: transparent; border: 1px solid #f5c842; color: #f5c842; padding: 11px 28px; font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; cursor: pointer; transition: all .3s; position: relative; overflow: hidden; }
-    .gbtn::before { content: ''; position: absolute; inset: 0; background: #f5c842; transform: translateX(-101%); transition: transform .3s ease; z-index: 0; }
-    .gbtn:hover::before { transform: translateX(0); }
-    .gbtn-t { position: relative; z-index: 1; transition: color .3s; }
-    .gbtn:hover .gbtn-t { color: #2d0a0a; }
-    .ghostbtn { background: transparent; border: 1px solid #6b2020; color: #c9a0a0; padding: 9px 22px; font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all .25s; }
-    .ghostbtn:hover { border-color: #f5c842; color: #f5c842; }
-    .dangerbtn { background: transparent; border: 1px solid rgba(220,80,80,.3); color: rgba(220,80,80,.7); padding: 8px 20px; font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all .25s; }
-    .dangerbtn:hover { border-color: #dc5050; color: #dc5050; }
-    .field { background: #3d1010; border: 1px solid #6b2020; color: #ffffff; padding: 12px 16px; width: 100%; font-family: 'Inconsolata', monospace; font-size: 13px; outline: none; transition: border-color .25s; }
-    .field:focus { border-color: #f5c842; }
-    .field::placeholder { color: #7a3535; }
-    textarea.field { resize: vertical; min-height: 90px; line-height: 1.7; }
-    .lbl { font-family: 'Inconsolata', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #f5c842; margin-bottom: 8px; display: block; }
-    .schip { display: inline-flex; align-items: center; gap: 8px; background: rgba(245,200,66,.1); border: 1px solid rgba(245,200,66,.35); color: #f5c842; padding: 6px 14px; font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 1px; }
-    .rmsk { background: none; border: none; color: #7a3535; cursor: pointer; font-size: 16px; line-height: 1; padding: 0; transition: color .2s; }
-    .rmsk:hover { color: #ff6060; }
-    .gcrd { position: relative; overflow: hidden; cursor: pointer; background: #4a1515; aspect-ratio: 1/1; }
-    .gcrd img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s cubic-bezier(.25,.46,.45,.94), filter .4s; filter: brightness(.88); }
-    .gcrd:hover img { transform: scale(1.07); filter: brightness(1); }
-    .gcrd-ov { position: absolute; inset: 0; background: linear-gradient(to top, rgba(45,10,10,.9) 0%, transparent 55%); opacity: 0; transition: opacity .35s; display: flex; flex-direction: column; justify-content: flex-end; padding: 14px; gap: 8px; }
-    .gcrd:hover .gcrd-ov { opacity: 1; }
-    .gcrd-row { display: flex; gap: 8px; }
-    .pic-wrap { position: relative; display: inline-block; }
-    .pic-hover { position: absolute; inset: 0; background: rgba(45,10,10,.85); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; opacity: 0; transition: opacity .3s; cursor: pointer; border: 2px solid rgba(245,200,66,.5); }
-    .pic-wrap:hover .pic-hover { opacity: 1; }
-    .mover { position: fixed; inset: 0; background: rgba(20,3,3,.97); z-index: 500; display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 32px 16px; }
-    .mbox { background: #2d0a0a; border: 1px solid #6b2020; width: 100%; max-width: 620px; padding: 40px; margin: auto; }
-    .lbov { position: fixed; inset: 0; background: rgba(20,3,3,.97); z-index: 600; display: flex; align-items: center; justify-content: center; }
-    .lbbtn { position: absolute; background: rgba(45,10,10,.8); border: 1px solid #6b2020; color: #c9a0a0; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; backdrop-filter: blur(4px); border-radius: 50%; width: 44px; height: 44px; }
-    .lbbtn:hover { border-color: #f5c842; color: #f5c842; }
-    .toast { position: fixed; bottom: 28px; right: 28px; z-index: 800; background: #3d1010; border-left: 2px solid #f5c842; padding: 13px 20px; font-family: 'Inconsolata', monospace; font-size: 11px; letter-spacing: 1px; color: #f5c842; animation: tIn .3s ease; max-width: 280px; line-height: 1.4; }
-    .toast.err { border-left-color: #dc5050; color: #ff8080; }
-    @keyframes tIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: translateX(0); } }
-    .dzone { border: 2px dashed #6b2020; text-align: center; cursor: pointer; transition: all .3s; background: #3d1010; }
-    .dzone.ov { border-color: #f5c842; background: rgba(245,200,66,.05); }
-    .dzone:hover { border-color: #c9a0a0; }
-    .addcrd { border: 1px dashed #6b2020; display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1/1; cursor: pointer; color: #7a3535; transition: all .3s; font-family: 'Inconsolata', monospace; }
-    .addcrd:hover { border-color: #f5c842; color: #f5c842; background: rgba(245,200,66,.05); }
-    .slink { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border: 1px solid #6b2020; color: #c9a0a0; transition: all .25s; font-family: 'Inconsolata', monospace; font-size: 12px; cursor: pointer; background: #4a1515; width: 100%; text-align: left; }
-    .slink:hover { border-color: #f5c842; color: #ffffff; background: rgba(245,200,66,.08); }
-    .sbox { border: 1px solid #6b2020; padding: 24px; text-align: center; background: #3d1010; }
-    .snum { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 400; color: #f5c842; line-height: 1; margin-bottom: 6px; }
-    .slbl { font-family: 'Inconsolata', monospace; font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: #c9a0a0; }
-    .avdot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,.6); display: inline-block; margin-right: 8px; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
-    .la { width: 48px; height: 1px; background: linear-gradient(to right, #f5c842, transparent); }
-    .sec-lbl { font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 4px; color: #f5c842; text-transform: uppercase; margin-bottom: 14px; }
-    input[type=checkbox] { accent-color: #f5c842; width: 14px; height: 14px; cursor: pointer; }
-    .mini-row-btn { background: rgba(45,10,10,.85); border: 1px solid rgba(245,200,66,.3); color: #f5c842; padding: 6px 12px; font-family: 'Inconsolata', monospace; font-size: 10px; letter-spacing: 1px; cursor: pointer; transition: all .2s; }
-    .mini-row-btn:hover { border-color: #f5c842; color: #ffffff; }
-    .mini-row-btn.rm { border-color: rgba(220,80,80,.3); color: #dc8080; background: rgba(220,80,80,.1); }
-    .mini-row-btn.rm:hover { border-color: #dc5050; }
-    /* upload pic box always visible on right */
-    .pic-upload-box { width: 100%; border: 2px dashed #6b2020; background: #3d1010; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; cursor: pointer; transition: all .3s; padding: 28px 16px; }
-    .pic-upload-box:hover { border-color: #f5c842; background: rgba(245,200,66,.04); }
-    @media (max-width: 768px) {
-      .hero-grid { grid-template-columns: 1fr !important; }
-      .about-grid { grid-template-columns: 1fr !important; }
-      .contact-grid { grid-template-columns: 1fr !important; }
-      nav { padding: 0 20px !important; }
-      section { padding-left: 20px !important; padding-right: 20px !important; }
-      footer { padding: 20px !important; }
+
+    /* SECTION REVEAL — fires both scroll down AND scroll up */
+    .reveal {
+      opacity: 0;
+      transform: translateY(44px);
+      transition: opacity 0.72s cubic-bezier(.22,.68,0,1.1), transform 0.72s cubic-bezier(.22,.68,0,1.1);
     }
+    .reveal.fl { transform: translateX(-44px); }
+    .reveal.fr { transform: translateX(44px); }
+    .reveal.ft { transform: translateY(-44px); }
+    .reveal.vis { opacity: 1 !important; transform: translate(0,0) !important; }
+    .reveal.d1 { transition-delay:.1s }
+    .reveal.d2 { transition-delay:.2s }
+    .reveal.d3 { transition-delay:.3s }
+
+    /* WIPE TRANSITION */
+    .wipe {
+      position: fixed; inset: 0; z-index: 9100;
+      background: #140203;
+      transform: scaleY(0); transform-origin: top;
+      pointer-events: none;
+      transition: transform 0.32s cubic-bezier(.77,0,.18,1);
+    }
+    .wipe.show { transform: scaleY(1); transform-origin: top; pointer-events: all; }
+    .wipe.hide { transform: scaleY(0); transform-origin: bottom; }
+
+    /* NAV */
+    .npill { font-family:'Inconsolata',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#c9a0a0; cursor:pointer; padding:6px 14px; border-radius:20px; transition:all .25s; border:1px solid transparent; }
+    .npill:hover { color:#f5c842; }
+    .npill.act { color:#f5c842; border-color:rgba(245,200,66,.4); background:rgba(245,200,66,.08); }
+
+    /* VIEW TOGGLE */
+    .vtog { display:flex; border:1px solid #6b2020; border-radius:3px; overflow:hidden; flex-shrink:0; }
+    .vbtn { background:transparent; border:none; color:#7a3535; padding:7px 13px; cursor:pointer; font-family:'Inconsolata',monospace; font-size:10px; letter-spacing:1px; transition:all .2s; display:flex; align-items:center; gap:5px; white-space:nowrap; }
+    .vbtn.on { background:#f5c842; color:#2d0a0a; font-weight:600; }
+    .vbtn:hover:not(.on) { color:#f5c842; background:rgba(245,200,66,.08); }
+
+    /* BUTTONS */
+    .gbtn { background:transparent; border:1px solid #f5c842; color:#f5c842; padding:11px 28px; font-family:'Inconsolata',monospace; font-size:11px; letter-spacing:2.5px; text-transform:uppercase; cursor:pointer; transition:all .3s; position:relative; overflow:hidden; white-space:nowrap; }
+    .gbtn::before { content:''; position:absolute; inset:0; background:#f5c842; transform:translateX(-101%); transition:transform .3s ease; z-index:0; }
+    .gbtn:hover::before { transform:translateX(0); }
+    .gbtn-t { position:relative; z-index:1; transition:color .3s; }
+    .gbtn:hover .gbtn-t { color:#2d0a0a; }
+    .ghostbtn { background:transparent; border:1px solid #6b2020; color:#c9a0a0; padding:9px 22px; font-family:'Inconsolata',monospace; font-size:10px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all .25s; white-space:nowrap; }
+    .ghostbtn:hover { border-color:#f5c842; color:#f5c842; }
+    .dangerbtn { background:transparent; border:1px solid rgba(220,80,80,.35); color:rgba(220,100,100,.9); padding:7px 16px; font-family:'Inconsolata',monospace; font-size:10px; letter-spacing:1.5px; text-transform:uppercase; cursor:pointer; transition:all .25s; white-space:nowrap; }
+    .dangerbtn:hover { border-color:#dc5050; color:#ff7070; background:rgba(220,80,80,.08); }
+
+    /* FIELDS */
+    .field { background:#3d1010; border:1px solid #6b2020; color:#fff; padding:12px 16px; width:100%; font-family:'Inconsolata',monospace; font-size:13px; outline:none; transition:border-color .25s; }
+    .field:focus { border-color:#f5c842; }
+    .field::placeholder { color:#7a3535; }
+    textarea.field { resize:vertical; line-height:1.7; }
+    .lbl { font-family:'Inconsolata',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:#f5c842; margin-bottom:8px; display:block; }
+    input[type=checkbox] { accent-color:#f5c842; width:14px; height:14px; cursor:pointer; }
+    .schip { display:inline-flex; align-items:center; gap:8px; background:rgba(245,200,66,.1); border:1px solid rgba(245,200,66,.35); color:#f5c842; padding:6px 14px; font-family:'Inconsolata',monospace; font-size:10px; letter-spacing:1px; }
+    .rmsk { background:none; border:none; color:#7a3535; cursor:pointer; font-size:16px; line-height:1; padding:0; transition:color .2s; }
+    .rmsk:hover { color:#ff6060; }
+
+    /* PROFILE PIC — perfect square */
+    .pic-box { width:100%; aspect-ratio:1/1; position:relative; overflow:hidden; border:2px solid #6b2020; background:#3d1010; cursor:pointer; transition:border-color .3s; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; }
+    .pic-box:hover { border-color:#f5c842; }
+    .pic-box img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+    .pic-ov { position:absolute; inset:0; background:rgba(25,3,3,.88); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; opacity:0; transition:opacity .3s; }
+    .pic-box:hover .pic-ov { opacity:1; }
+    .pic-btns { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+
+    /* GALLERY — slightly wider aspect ratio (4:3) */
+    .gcrd { position:relative; overflow:hidden; cursor:pointer; background:#4a1515; aspect-ratio:4/3; }
+    .gcrd img { width:100%; height:100%; object-fit:cover; transition:transform .6s cubic-bezier(.25,.46,.45,.94), filter .4s; filter:brightness(.88); display:block; }
+    .gcrd:hover img { transform:scale(1.07); filter:brightness(1); }
+    .gcrd-ov { position:absolute; inset:0; background:linear-gradient(to top,rgba(45,10,10,.9) 0%,transparent 55%); opacity:0; transition:opacity .35s; display:flex; flex-direction:column; justify-content:flex-end; padding:14px; gap:8px; }
+    .gcrd:hover .gcrd-ov { opacity:1; }
+    .gcrd-row { display:flex; gap:8px; }
+    .addcrd { border:2px dashed #6b2020; display:flex; flex-direction:column; align-items:center; justify-content:center; aspect-ratio:4/3; cursor:pointer; color:#7a3535; transition:all .3s; font-family:'Inconsolata',monospace; }
+    .addcrd:hover { border-color:#f5c842; color:#f5c842; background:rgba(245,200,66,.04); }
+
+    /* MODAL */
+    .mover { position:fixed; inset:0; background:rgba(18,2,2,.97); z-index:500; display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; padding:32px 16px; }
+    .mbox { background:#2d0a0a; border:1px solid #6b2020; width:100%; max-width:620px; padding:40px; margin:auto; }
+
+    /* LIGHTBOX */
+    .lbov { position:fixed; inset:0; background:rgba(10,2,2,.97); z-index:600; display:flex; align-items:center; justify-content:center; }
+    .lbbtn { position:absolute; background:rgba(45,10,10,.8); border:1px solid #6b2020; color:#c9a0a0; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .2s; backdrop-filter:blur(4px); border-radius:50%; width:44px; height:44px; }
+    .lbbtn:hover { border-color:#f5c842; color:#f5c842; }
+
+    /* TOAST */
+    .toast { position:fixed; bottom:28px; right:28px; z-index:800; background:#3d1010; border-left:2px solid #f5c842; padding:13px 20px; font-family:'Inconsolata',monospace; font-size:11px; letter-spacing:1px; color:#f5c842; animation:tIn .3s ease; max-width:280px; line-height:1.4; }
+    .toast.err { border-left-color:#dc5050; color:#ff8080; }
+    @keyframes tIn { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:translateX(0)} }
+
+    /* DROPZONE */
+    .dzone { border:2px dashed #6b2020; text-align:center; cursor:pointer; transition:all .3s; background:#3d1010; padding:72px 40px; }
+    .dzone.ov { border-color:#f5c842; background:rgba(245,200,66,.05); }
+    .dzone:hover { border-color:#c9a0a0; }
+
+    /* MISC */
+    .slink { display:flex; align-items:center; gap:12px; padding:14px 18px; border:1px solid #6b2020; color:#c9a0a0; transition:all .25s; font-family:'Inconsolata',monospace; font-size:12px; cursor:pointer; background:#4a1515; width:100%; text-align:left; }
+    .slink:hover { border-color:#f5c842; color:#fff; background:rgba(245,200,66,.08); }
+    .sbox { border:1px solid #6b2020; padding:24px; text-align:center; background:#3d1010; }
+    .snum { font-family:'Playfair Display',serif; font-size:40px; font-weight:400; color:#f5c842; line-height:1; margin-bottom:6px; }
+    .slbl { font-family:'Inconsolata',monospace; font-size:9px; letter-spacing:3px; text-transform:uppercase; color:#c9a0a0; }
+    .avdot { width:8px; height:8px; border-radius:50%; background:#4ade80; box-shadow:0 0 8px rgba(74,222,128,.6); display:inline-block; margin-right:8px; animation:pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+    .la { width:48px; height:1px; background:linear-gradient(to right,#f5c842,transparent); }
+    .sec-lbl { font-family:'Inconsolata',monospace; font-size:10px; letter-spacing:4px; color:#f5c842; text-transform:uppercase; margin-bottom:14px; }
+    .mini-row-btn { background:rgba(45,10,10,.85); border:1px solid rgba(245,200,66,.3); color:#f5c842; padding:6px 12px; font-family:'Inconsolata',monospace; font-size:10px; letter-spacing:1px; cursor:pointer; transition:all .2s; }
+    .mini-row-btn:hover { border-color:#f5c842; color:#fff; }
+    .mini-row-btn.rm { border-color:rgba(220,80,80,.3); color:#dc8080; background:rgba(220,80,80,.1); }
+    .mini-row-btn.rm:hover { border-color:#dc5050; }
+
+    /* CHAR BAR */
+    .char-bar { height:3px; background:#6b2020; margin-top:8px; border-radius:2px; overflow:hidden; }
+    .char-fill { height:100%; background:#f5c842; transition:width .15s,background .15s; border-radius:2px; }
+    .char-fill.warn { background:#f59c42; }
+    .char-fill.over { background:#dc5050; }
+
+    /* SUBMIT BTN */
+    .submit-btn { background:transparent; border:1px solid #f5c842; color:#f5c842; padding:14px; font-family:'Inconsolata',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; cursor:pointer; transition:all .3s; position:relative; overflow:hidden; width:100%; }
+    .submit-btn::before { content:''; position:absolute; inset:0; background:#f5c842; transform:translateX(-101%); transition:transform .3s ease; z-index:0; }
+    .submit-btn:hover::before { transform:translateX(0); }
+    .submit-btn span { position:relative; z-index:1; transition:color .3s; }
+    .submit-btn:hover span { color:#2d0a0a; }
+
+    /* MOBILE FRAME */
+    .mob-frame { max-width:390px; margin:0 auto; box-shadow:0 0 0 2px #6b2020, 0 0 60px rgba(245,200,66,.07); }
+    .mob-frame::before { content:'● ● ●'; display:block; background:#1e0505; color:#6b2020; font-size:9px; letter-spacing:6px; text-align:center; padding:10px; border-bottom:1px solid #3d1010; font-family:'Inconsolata',monospace; }
+
+    /* RESPONSIVE */
+    @media(max-width:900px){ .hgrid{grid-template-columns:1fr!important} .agrid{grid-template-columns:1fr!important} .cgrid{grid-template-columns:1fr!important} .nav-links{display:none!important} }
+    @media(max-width:600px){ nav{padding:0 14px!important} section{padding-left:18px!important;padding-right:18px!important} footer{padding:18px!important} .mbox{padding:22px!important} }
+    @media(max-width:420px){ .vtog{display:none!important} }
   </style>
 </head>
 <body>
-  <div id="root"></div>
-  <script type="text/babel">
-    const { useState, useRef, useCallback, useEffect } = React;
- 
-    const DEFAULTS = {
-      name: "Dharanitharan G",
-      title: "Graphic Designer",
-      bio: "I am honing my skills in Graphic Design to design brochures, Magazines, Business Cards, ID Cards, Logos, Social Media Posters, Banners, Book Cover Pages, and packaging designs, etc. My skills include Adobe Illustrator, InDesign, and Photoshop.",
-      email: "dharanitharan12027@gmail.com",
-      location: "Gobichettipalayam, Erode District",
-      available: true,
-      skills: ["Adobe Illustrator", "Adobe InDesign", "Adobe Photoshop", "Logo Design", "Brochure Design", "Social Media Posters", "Business Cards", "Packaging Design", "Banner Design", "Book Cover Design"],
-      instagram: "@dharani.designs_12",
-      linkedin: "https://www.linkedin.com/in/dharani-tharan-36982025b",
-    };
- 
-    const InstagramIcon = () => (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/>
-      </svg>
-    );
-    const LinkedInIcon = () => (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
-      </svg>
-    );
-    const ChevronLeft = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="15,18 9,12 15,6"/></svg>;
-    const ChevronRight = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="9,18 15,12 9,6"/></svg>;
-    const CloseIcon = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
-    const UploadIcon = () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#f5c842" strokeWidth="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>;
- 
-    function Portfolio() {
-      // Load saved profile from localStorage on first load
-      const savedProfile = (() => { try { const s = localStorage.getItem("portfolio_profile"); return s ? JSON.parse(s) : DEFAULTS; } catch(e) { return DEFAULTS; } })();
-      const savedPic = (() => { try { return localStorage.getItem("portfolio_pic") || null; } catch(e) { return null; } })();
- 
-      const [profile, setProfile] = useState(savedProfile);
-      const [profilePic, setProfilePic] = useState(savedPic);
-      const [images, setImages] = useState([]);
-      const [editing, setEditing] = useState(false);
-      const [draft, setDraft] = useState(savedProfile);
-      const [skillInput, setSkillInput] = useState("");
-      const [lightbox, setLightbox] = useState(null);
-      const [lbIdx, setLbIdx] = useState(0);
-      const [toast, setToast] = useState(null);
-      const [dragOver, setDragOver] = useState(false);
-      const [activeSection, setActiveSection] = useState("hero");
-      const [loaded, setLoaded] = useState(false);
- 
-      const picRef = useRef();
-      const galleryRef = useRef();
-      const toastRef = useRef();
- 
-      useEffect(() => { setTimeout(() => setLoaded(true), 80); }, []);
- 
-      const showToast = (msg, err = false) => {
-        clearTimeout(toastRef.current);
-        setToast({ msg, err });
-        toastRef.current = setTimeout(() => setToast(null), 3000);
-      };
- 
-      const handlePic = (e) => {
-        const f = e.target.files[0];
-        if (!f || !f.type.startsWith("image/")) return;
-        const r = new FileReader();
-        r.onload = ev => {
-          setProfilePic(ev.target.result);
-          try { localStorage.setItem("portfolio_pic", ev.target.result); } catch(e) {}
-          showToast("Profile photo updated");
-        };
-        r.readAsDataURL(f);
-      };
- 
-      const addImages = useCallback((files) => {
-        const space = 50 - images.length;
-        if (space <= 0) return showToast("Maximum 50 images reached", true);
-        const valid = Array.from(files).filter(f => f.type.startsWith("image/")).slice(0, space);
-        if (!valid.length) return showToast("No valid images found", true);
-        Promise.all(valid.map(f => new Promise(res => {
-          const r = new FileReader();
-          r.onload = ev => res({ src: ev.target.result, name: f.name, id: Math.random().toString(36).slice(2) });
-          r.readAsDataURL(f);
-        }))).then(imgs => {
-          setImages(prev => [...prev, ...imgs]);
-          showToast(`${imgs.length} image${imgs.length > 1 ? "s" : ""} added`);
-        });
-      }, [images.length]);
- 
-      const removeImage = (id) => {
-        setImages(prev => prev.filter(i => i.id !== id));
-        setLightbox(null);
-        showToast("Image removed");
-      };
- 
-      const openLb = (img, idx) => { setLightbox(img); setLbIdx(idx); };
-      const lbNav = (dir) => {
-        const next = (lbIdx + dir + images.length) % images.length;
-        setLightbox(images[next]); setLbIdx(next);
-      };
- 
-      useEffect(() => {
-        const fn = (e) => {
-          if (!lightbox) return;
-          if (e.key === "Escape") setLightbox(null);
-          if (e.key === "ArrowLeft") lbNav(-1);
-          if (e.key === "ArrowRight") lbNav(1);
-        };
-        window.addEventListener("keydown", fn);
-        return () => window.removeEventListener("keydown", fn);
-      }, [lightbox, lbIdx, images]);
- 
-      useEffect(() => {
-        const obs = new IntersectionObserver(entries => {
-          entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id); });
-        }, { threshold: 0.3 });
-        ["hero","work","about","contact"].forEach(id => {
-          const el = document.getElementById(id); if (el) obs.observe(el);
-        });
-        return () => obs.disconnect();
-      }, []);
- 
-      const scrollTo = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); setActiveSection(id); };
-      const saveEdit = () => {
-        setProfile(draft);
-        try { localStorage.setItem("portfolio_profile", JSON.stringify(draft)); } catch(e) {}
-        setEditing(false);
-        showToast("Changes saved successfully!");
-      };
- 
-      return (
-        <div style={{ background: "#2d0a0a", color: "#ffffff", minHeight: "100vh", fontFamily: "Georgia, serif", overflowX: "hidden" }}>
- 
-          {toast && <div className={`toast${toast.err ? " err" : ""}`}>{toast.msg}</div>}
- 
-          {/* LIGHTBOX */}
-          {lightbox && (
-            <div className="lbov" onClick={() => setLightbox(null)}>
-              <button className="lbbtn" style={{ top: 18, right: 18 }} onClick={() => setLightbox(null)}><CloseIcon /></button>
-              {images.length > 1 && <>
-                <button className="lbbtn" style={{ left: 16 }} onClick={e => { e.stopPropagation(); lbNav(-1); }}><ChevronLeft /></button>
-                <button className="lbbtn" style={{ right: 16 }} onClick={e => { e.stopPropagation(); lbNav(1); }}><ChevronRight /></button>
-              </>}
-              <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:16, maxWidth:"92vw" }} onClick={e => e.stopPropagation()}>
-                <img src={lightbox.src} alt={lightbox.name} style={{ maxWidth:"88vw", maxHeight:"82vh", objectFit:"contain", display:"block" }} />
-                <div style={{ display:"flex", gap:12, alignItems:"center" }}>
-                  <span style={{ fontFamily:"'Inconsolata',monospace", fontSize:11, color:"#7a3535", letterSpacing:1 }}>{lbIdx + 1} / {images.length}</span>
-                  <button className="dangerbtn" onClick={() => removeImage(lightbox.id)}>Remove</button>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useCallback, useEffect } = React;
+const MAX_MSG = 2000;
+const DEFAULTS = {
+  name:"Dharanitharan G", title:"Graphic Designer",
+  bio:"I am honing my skills in Graphic Design to design brochures, Magazines, Business Cards, ID Cards, Logos, Social Media Posters, Banners, Book Cover Pages, and packaging designs, etc. My skills include Adobe Illustrator, InDesign, and Photoshop.",
+  email:"dharanitharan12027@gmail.com", location:"Gobichettipalayam, Erode District", available:true,
+  skills:["Adobe Illustrator","Adobe InDesign","Adobe Photoshop","Logo Design","Brochure Design","Social Media Posters","Business Cards","Packaging Design","Banner Design","Book Cover Design"],
+  instagram:"@dharani.designs_12", linkedin:"https://www.linkedin.com/in/dharani-tharan-36982025b"
+};
+
+const IgIcon  = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none"/></svg>;
+const LiIcon  = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>;
+const CL      = ()=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="15,18 9,12 15,6"/></svg>;
+const CR      = ()=><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="9,18 15,12 9,6"/></svg>;
+const XI      = ()=><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+const DIcon   = ()=><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>;
+const MIcon   = ()=><svg width="11" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" strokeWidth="3"/></svg>;
+
+function Portfolio() {
+  const sv = (k,d)=>{ try{const s=localStorage.getItem(k);return s?JSON.parse(s):d;}catch(e){return d;} };
+  const [profile,  setProfile ] = useState(()=>sv("p_pr",DEFAULTS));
+  const [pic,      setPic     ] = useState(()=>{try{return localStorage.getItem("p_pic")||null;}catch(e){return null;}});
+  const [images,   setImages  ] = useState([]);
+  const [editing,  setEditing ] = useState(false);
+  const [draft,    setDraft   ] = useState(()=>sv("p_pr",DEFAULTS));
+  const [skillIn,  setSkillIn ] = useState("");
+  const [lb,       setLb      ] = useState(null);
+  const [lbIdx,    setLbIdx   ] = useState(0);
+  const [toast,    setToast   ] = useState(null);
+  const [drag,     setDrag    ] = useState(false);
+  const [activeS,  setActiveS ] = useState("hero");
+  const [view,     setView    ] = useState("desktop");
+  const [wipe,     setWipe    ] = useState(false);
+  const [form,     setForm    ] = useState({name:"",email:"",subject:"",message:""});
+  const [sent,     setSent    ] = useState(false);
+  const [revealed, setRevealed] = useState({});
+  const picRef = useRef(); const gallRef = useRef(); const tRef = useRef();
+
+  /* REVEAL OBSERVER — triggers on scroll both directions */
+  useEffect(()=>{
+    const obs = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        setRevealed(v=>({...v,[e.target.dataset.rid]:e.isIntersecting}));
+      });
+    },{threshold:0.13});
+    document.querySelectorAll('[data-rid]').forEach(el=>obs.observe(el));
+    return ()=>obs.disconnect();
+  },[]);
+
+  /* Apply / remove vis class */
+  useEffect(()=>{
+    Object.entries(revealed).forEach(([rid,isVis])=>{
+      document.querySelectorAll(`[data-rid="${rid}"]`).forEach(el=>{
+        isVis ? el.classList.add('vis') : el.classList.remove('vis');
+      });
+    });
+  },[revealed]);
+
+  /* Active section */
+  useEffect(()=>{
+    const obs=new IntersectionObserver(es=>{
+      es.forEach(e=>{if(e.isIntersecting)setActiveS(e.target.id);});
+    },{threshold:0.3});
+    ['hero','work','about','contact'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+    return ()=>obs.disconnect();
+  },[]);
+
+  const toast$ = (msg,err=false)=>{ clearTimeout(tRef.current); setToast({msg,err}); tRef.current=setTimeout(()=>setToast(null),3200); };
+
+  const scrollTo = id=>{
+    setWipe(true);
+    setTimeout(()=>{ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); setActiveS(id); setTimeout(()=>setWipe(false),380); },300);
+  };
+
+  const handlePic = e=>{
+    const f=e.target.files[0]; if(!f||!f.type.startsWith('image/'))return;
+    const r=new FileReader();
+    r.onload=ev=>{ setPic(ev.target.result); try{localStorage.setItem('p_pic',ev.target.result);}catch(e){} toast$('Profile photo updated ✓'); };
+    r.readAsDataURL(f);
+  };
+  const removePic=()=>{ setPic(null); try{localStorage.removeItem('p_pic');}catch(e){} toast$('Photo removed'); };
+
+  const addImages=useCallback(files=>{
+    const space=50-images.length; if(space<=0)return toast$('Max 50 images',true);
+    const valid=Array.from(files).filter(f=>f.type.startsWith('image/')).slice(0,space);
+    if(!valid.length)return toast$('No valid images',true);
+    Promise.all(valid.map(f=>new Promise(res=>{
+      const r=new FileReader(); r.onload=ev=>res({src:ev.target.result,name:f.name,id:Math.random().toString(36).slice(2)}); r.readAsDataURL(f);
+    }))).then(imgs=>{ setImages(p=>[...p,...imgs]); toast$(`${imgs.length} image${imgs.length>1?'s':''} added ✓`); });
+  },[images.length]);
+
+  const removeImg=id=>{ setImages(p=>p.filter(i=>i.id!==id)); setLb(null); toast$('Image removed'); };
+  const openLb=(img,idx)=>{ setLb(img); setLbIdx(idx); };
+  const lbNav=dir=>{ const n=(lbIdx+dir+images.length)%images.length; setLb(images[n]); setLbIdx(n); };
+
+  useEffect(()=>{
+    const fn=e=>{ if(!lb)return; if(e.key==='Escape')setLb(null); if(e.key==='ArrowLeft')lbNav(-1); if(e.key==='ArrowRight')lbNav(1); };
+    window.addEventListener('keydown',fn); return ()=>window.removeEventListener('keydown',fn);
+  },[lb,lbIdx,images]);
+
+  const saveEdit=()=>{ setProfile(draft); try{localStorage.setItem('p_pr',JSON.stringify(draft));}catch(e){} setEditing(false); toast$('Changes saved ✓'); };
+
+  const submitForm=()=>{
+    if(!form.name||!form.email||!form.message)return toast$('Please fill all required fields',true);
+    setSent(true); toast$('Message sent! ✓');
+    setTimeout(()=>{ setSent(false); setForm({name:'',email:'',subject:'',message:''}); },3500);
+  };
+
+  const msgLen=form.message.length;
+  const msgClass=msgLen>1800?'over':msgLen>1400?'warn':'';
+
+  return (
+    <div style={{background:'#2d0a0a',color:'#fff',minHeight:'100vh',fontFamily:'Georgia,serif',overflowX:'hidden'}}>
+
+      {/* WIPE */}
+      <div className={`wipe${wipe?' show':' hide'}`}/>
+
+      {/* TOAST */}
+      {toast&&<div className={`toast${toast.err?' err':''}`}>{toast.msg}</div>}
+
+      {/* LIGHTBOX */}
+      {lb&&(
+        <div className="lbov" onClick={()=>setLb(null)}>
+          <button className="lbbtn" style={{top:18,right:18}} onClick={()=>setLb(null)}><XI/></button>
+          {images.length>1&&<><button className="lbbtn" style={{left:16}} onClick={e=>{e.stopPropagation();lbNav(-1);}}><CL/></button><button className="lbbtn" style={{right:16}} onClick={e=>{e.stopPropagation();lbNav(1);}}><CR/></button></>}
+          <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:16,maxWidth:'92vw'}} onClick={e=>e.stopPropagation()}>
+            <img src={lb.src} alt={lb.name} style={{maxWidth:'88vw',maxHeight:'82vh',objectFit:'contain'}}/>
+            <div style={{display:'flex',gap:14,alignItems:'center'}}>
+              <span style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#7a3535'}}>{lbIdx+1} / {images.length}</span>
+              <button className="dangerbtn" onClick={()=>removeImg(lb.id)}>✕ Remove</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* EDIT MODAL */}
+      {editing&&(
+        <div className="mover" onClick={()=>setEditing(false)}>
+          <div className="mbox" onClick={e=>e.stopPropagation()}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:30}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontWeight:400,fontSize:28,color:'#fff'}}>Edit Profile</h2>
+              <button className="ghostbtn" onClick={()=>setEditing(false)}>✕ Close</button>
+            </div>
+            <div style={{display:'flex',flexDirection:'column',gap:18}}>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+                {[['Name','name'],['Title / Role','title']].map(([l,k])=>(
+                  <div key={k}><span className="lbl">{l}</span><input className="field" value={draft[k]} onChange={e=>setDraft(p=>({...p,[k]:e.target.value}))}/></div>
+                ))}
+              </div>
+              <div><span className="lbl">Bio</span><textarea className="field" style={{minHeight:80}} value={draft.bio} onChange={e=>setDraft(p=>({...p,bio:e.target.value}))}/></div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+                {[['Email','email'],['Location','location']].map(([l,k])=>(
+                  <div key={k}><span className="lbl">{l}</span><input className="field" value={draft[k]} onChange={e=>setDraft(p=>({...p,[k]:e.target.value}))}/></div>
+                ))}
+              </div>
+              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16}}>
+                <div><span className="lbl">Instagram</span><input className="field" value={draft.instagram} onChange={e=>setDraft(p=>({...p,instagram:e.target.value}))}/></div>
+                <div><span className="lbl">LinkedIn URL</span><input className="field" value={draft.linkedin} onChange={e=>setDraft(p=>({...p,linkedin:e.target.value}))}/></div>
+              </div>
+              <div>
+                <span className="lbl">Skills</span>
+                <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:10}}>
+                  {draft.skills.map((s,i)=><span key={i} className="schip">{s}<button className="rmsk" onClick={()=>setDraft(p=>({...p,skills:p.skills.filter((_,j)=>j!==i)}))}>×</button></span>)}
+                </div>
+                <div style={{display:'flex',gap:8}}>
+                  <input className="field" style={{flex:1}} placeholder="New skill…" value={skillIn} onChange={e=>setSkillIn(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&skillIn.trim()){setDraft(p=>({...p,skills:[...p.skills,skillIn.trim()]}));setSkillIn('');}}}/>
+                  <button className="ghostbtn" onClick={()=>{if(skillIn.trim()){setDraft(p=>({...p,skills:[...p.skills,skillIn.trim()]}));setSkillIn('');}}}>Add</button>
                 </div>
               </div>
-            </div>
-          )}
- 
-          {/* EDIT MODAL */}
-          {editing && (
-            <div className="mover" onClick={() => setEditing(false)}>
-              <div className="mbox" onClick={e => e.stopPropagation()}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:32 }}>
-                  <h2 style={{ fontFamily:"'Playfair Display',serif", fontWeight:400, fontSize:30, color:"#ffffff" }}>Edit Profile</h2>
-                  <button className="ghostbtn" onClick={() => setEditing(false)}>✕ Close</button>
-                </div>
-                <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-                    {[["Name","name"],["Title / Role","title"]].map(([l,k]) => (
-                      <div key={k}><span className="lbl">{l}</span>
-                        <input className="field" value={draft[k]} onChange={e => setDraft(p => ({...p,[k]:e.target.value}))} />
-                      </div>
-                    ))}
-                  </div>
-                  <div><span className="lbl">Bio</span>
-                    <textarea className="field" value={draft.bio} onChange={e => setDraft(p => ({...p,bio:e.target.value}))} />
-                  </div>
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-                    {[["Email","email"],["Location","location"]].map(([l,k]) => (
-                      <div key={k}><span className="lbl">{l}</span>
-                        <input className="field" value={draft[k]} onChange={e => setDraft(p => ({...p,[k]:e.target.value}))} />
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-                    <div><span className="lbl">Instagram</span>
-                      <input className="field" value={draft.instagram} placeholder="@handle" onChange={e => setDraft(p => ({...p,instagram:e.target.value}))} />
-                    </div>
-                    <div><span className="lbl">LinkedIn URL</span>
-                      <input className="field" value={draft.linkedin} placeholder="https://linkedin.com/in/..." onChange={e => setDraft(p => ({...p,linkedin:e.target.value}))} />
-                    </div>
-                  </div>
-                  <div>
-                    <span className="lbl">Skills</span>
-                    <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginBottom:12 }}>
-                      {draft.skills.map((s,i) => (
-                        <span key={i} className="schip">{s}
-                          <button className="rmsk" onClick={() => setDraft(p => ({...p,skills:p.skills.filter((_,j)=>j!==i)}))}>×</button>
-                        </span>
-                      ))}
-                    </div>
-                    <div style={{ display:"flex", gap:8 }}>
-                      <input className="field" style={{ flex:1 }} placeholder="New skill…" value={skillInput}
-                        onChange={e => setSkillInput(e.target.value)}
-                        onKeyDown={e => { if(e.key==="Enter"&&skillInput.trim()){setDraft(p=>({...p,skills:[...p.skills,skillInput.trim()]}));setSkillInput("");} }} />
-                      <button className="ghostbtn" onClick={() => { if(skillInput.trim()){setDraft(p=>({...p,skills:[...p.skills,skillInput.trim()]}));setSkillInput("");} }}>Add</button>
-                    </div>
-                  </div>
-                  <div style={{ display:"flex", alignItems:"center", gap:10, padding:"12px 0", borderTop:"1px solid #6b2020" }}>
-                    <input type="checkbox" id="avail" checked={draft.available} onChange={e => setDraft(p => ({...p,available:e.target.checked}))} />
-                    <label htmlFor="avail" style={{ fontFamily:"'Inconsolata',monospace", fontSize:11, color:"#c9a0a0", letterSpacing:1, cursor:"pointer" }}>Available for new projects</label>
-                  </div>
-                </div>
-                {/* SAVE BUTTON — always visible */}
-                <div style={{ display:"flex", justifyContent:"flex-end", gap:12, marginTop:32, paddingTop:24, borderTop:"1px solid #6b2020" }}>
-                  <button className="ghostbtn" onClick={() => setEditing(false)}>Cancel</button>
-                  <button className="gbtn" onClick={saveEdit}><span className="gbtn-t">✓ Save Changes</span></button>
-                </div>
+              <div style={{display:'flex',alignItems:'center',gap:10,padding:'12px 0',borderTop:'1px solid #6b2020'}}>
+                <input type="checkbox" id="avail" checked={draft.available} onChange={e=>setDraft(p=>({...p,available:e.target.checked}))}/>
+                <label htmlFor="avail" style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#c9a0a0',cursor:'pointer'}}>Available for new projects</label>
               </div>
             </div>
-          )}
- 
-          {/* NAV */}
-          <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:200, padding:"0 32px", height:64, display:"flex", alignItems:"center", justifyContent:"space-between", background:"rgba(20,3,3,.97)", backdropFilter:"blur(16px)", borderBottom:"1px solid #6b2020" }}>
-            <div style={{ fontFamily:"'Playfair Display',serif", fontSize:22, fontWeight:400, letterSpacing:1, cursor:"pointer", color:"#ffffff" }} onClick={() => scrollTo("hero")}>
-              Dharanitharan<span style={{ color:"#ffffff", fontStyle:"normal" }}> G</span>
+            <div style={{display:'flex',justifyContent:'flex-end',gap:12,marginTop:28,paddingTop:22,borderTop:'1px solid #6b2020'}}>
+              <button className="ghostbtn" onClick={()=>setEditing(false)}>Cancel</button>
+              <button className="gbtn" onClick={saveEdit}><span className="gbtn-t">✓ Save Changes</span></button>
             </div>
-            <div style={{ display:"flex", gap:4 }}>
-              {[["hero","Home"],["work","Work"],["about","About"],["contact","Contact"]].map(([id,label]) => (
-                <span key={id} className={`npill${activeSection===id?" act":""}`} onClick={() => scrollTo(id)}>{label}</span>
+          </div>
+        </div>
+      )}
+
+      {/* NAV */}
+      <nav style={{position:'fixed',top:0,left:0,right:0,zIndex:200,padding:'0 28px',height:64,display:'flex',alignItems:'center',justifyContent:'space-between',gap:14,background:'rgba(20,3,3,.97)',backdropFilter:'blur(16px)',borderBottom:'1px solid #6b2020'}}>
+        <div style={{fontFamily:"'Playfair Display',serif",fontSize:19,fontWeight:400,letterSpacing:1,cursor:'pointer',color:'#fff',flexShrink:0}} onClick={()=>scrollTo('hero')}>
+          DHARANITHARAN<span style={{color:'#fff'}}> G</span>
+        </div>
+        <div className="nav-links" style={{display:'flex',gap:2}}>
+          {[['hero','Home'],['work','Work'],['about','About'],['contact','Contact']].map(([id,l])=>(
+            <span key={id} className={`npill${activeS===id?' act':''}`} onClick={()=>scrollTo(id)}>{l}</span>
+          ))}
+        </div>
+        {/* Desktop/Mobile toggle + Edit — same row, clear spacing */}
+        <div style={{display:'flex',alignItems:'center',gap:16,flexShrink:0}}>
+          <div className="vtog">
+            <button className={`vbtn${view==='desktop'?' on':''}`} onClick={()=>setView('desktop')} title="Desktop view"><DIcon/> Desktop</button>
+            <button className={`vbtn${view==='mobile'?' on':''}`} onClick={()=>setView('mobile')} title="Mobile view"><MIcon/> Mobile</button>
+          </div>
+          <button className="gbtn" style={{fontSize:10,padding:'8px 20px'}} onClick={()=>{setDraft({...profile});setEditing(true);}}>
+            <span className="gbtn-t">Edit Profile</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* MOBILE FRAME WRAPPER */}
+      <div className={view==='mobile'?'mob-frame':''}>
+
+      {/* ── HERO ── */}
+      <section id="hero" style={{minHeight:'100vh',display:'flex',alignItems:'center',padding:'100px 48px 60px',position:'relative',overflow:'hidden',background:'linear-gradient(135deg,#2d0a0a 0%,#3d1010 50%,#2d0a0a 100%)'}}>
+        <div style={{position:'absolute',top:'10%',right:'5%',width:400,height:400,borderRadius:'50%',background:'radial-gradient(circle,rgba(245,200,66,.07) 0%,transparent 70%)',pointerEvents:'none'}}/>
+        <div style={{position:'absolute',bottom:'20%',left:'3%',width:1,height:230,background:'linear-gradient(to bottom,transparent,rgba(245,200,66,.35),transparent)',pointerEvents:'none'}}/>
+        <div className="hgrid" style={{maxWidth:1080,width:'100%',margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr',gap:72,alignItems:'center'}}>
+          {/* LEFT */}
+          <div data-rid="h1" className="reveal fl">
+            {profile.available&&(
+              <div style={{display:'inline-flex',alignItems:'center',marginBottom:28,background:'rgba(74,222,128,.06)',border:'1px solid rgba(74,222,128,.2)',padding:'6px 14px'}}>
+                <span className="avdot"/><span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,letterSpacing:2,color:'#4ade80'}}>AVAILABLE FOR WORK</span>
+              </div>
+            )}
+            <div className="sec-lbl">Creative Portfolio</div>
+            <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(24px,3.2vw,50px)',fontWeight:500,lineHeight:1.15,marginBottom:24,whiteSpace:'nowrap'}}>
+              <span style={{color:'#fff',textTransform:'uppercase',letterSpacing:'2px'}}>DHARANITHARAN </span><span style={{color:'#fff'}}>G</span>
+            </h1>
+            <div className="la" style={{marginBottom:20}}/>
+            <p style={{fontFamily:"'Inconsolata',monospace",fontSize:11,letterSpacing:2,color:'#f5c842',marginBottom:18,textTransform:'uppercase'}}>{profile.title}</p>
+            <p style={{color:'#f0e6e6',lineHeight:1.85,fontSize:14.5,maxWidth:420,marginBottom:36}}>{profile.bio}</p>
+            <div style={{display:'flex',gap:12,flexWrap:'wrap'}}>
+              <button className="gbtn" onClick={()=>scrollTo('work')}><span className="gbtn-t">View My Work</span></button>
+              <button className="ghostbtn" onClick={()=>scrollTo('contact')}>Contact Me</button>
+            </div>
+          </div>
+          {/* RIGHT — square pic */}
+          <div data-rid="h2" className="reveal fr d1" style={{display:'flex',flexDirection:'column',alignItems:'center',gap:16}}>
+            <div style={{width:'100%',maxWidth:320}}>
+              <div className="pic-box" onClick={()=>!pic&&picRef.current.click()}>
+                {!pic&&<><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#6b2020" strokeWidth="1.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span style={{fontFamily:"'Playfair Display',serif",fontSize:15,color:'#7a3535'}}>Upload Profile Photo</span><span style={{fontFamily:"'Inconsolata',monospace",fontSize:9,color:'#5a2020',letterSpacing:2}}>CLICK TO BROWSE</span></>}
+                {pic&&<img src={pic} alt="Profile"/>}
+                <div className="pic-ov">
+                  <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:'#f5c842',letterSpacing:2,marginBottom:4}}>PROFILE PHOTO</span>
+                  <div className="pic-btns">
+                    <button className="ghostbtn" style={{fontSize:9,padding:'6px 14px'}} onClick={e=>{e.stopPropagation();picRef.current.click();}}>↑ Change</button>
+                    {pic&&<button className="dangerbtn" style={{fontSize:9,padding:'6px 14px'}} onClick={e=>{e.stopPropagation();removePic();}}>✕ Remove</button>}
+                  </div>
+                </div>
+              </div>
+              <input ref={picRef} type="file" accept="image/*" style={{display:'none'}} onChange={handlePic}/>
+              {!pic&&<button className="ghostbtn" style={{width:'100%',marginTop:10,textAlign:'center'}} onClick={()=>picRef.current.click()}>↑ Upload Photo</button>}
+            </div>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:2,width:'100%',maxWidth:320,background:'#6b2020'}}>
+              {[[images.length,'Gallery'],['50+','Designs']].map(([n,l])=>(
+                <div key={l} className="sbox"><div className="snum">{n}</div><div className="slbl">{l}</div></div>
               ))}
             </div>
-            <button className="gbtn" style={{ fontSize:10, padding:"8px 18px" }} onClick={() => { setDraft({...profile}); setEditing(true); }}>
-              <span className="gbtn-t">Edit Profile</span>
-            </button>
-          </nav>
- 
-          {/* HERO */}
-          <section id="hero" style={{ minHeight:"100vh", display:"flex", alignItems:"center", padding:"100px 48px 60px", position:"relative", overflow:"hidden", background:"linear-gradient(135deg,#2d0a0a 0%,#3d1010 50%,#2d0a0a 100%)" }}>
-            <div style={{ position:"absolute", top:"12%", right:"6%", width:360, height:360, borderRadius:"50%", background:"radial-gradient(circle,rgba(245,200,66,.08) 0%,transparent 70%)", pointerEvents:"none" }} />
-            <div style={{ position:"absolute", bottom:"18%", left:"4%", width:1, height:220, background:"linear-gradient(to bottom,transparent,rgba(245,200,66,.4),transparent)", pointerEvents:"none" }} />
- 
-            <div className="hero-grid" style={{ maxWidth:1080, width:"100%", margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1fr", gap:80, alignItems:"center" }}>
- 
-              {/* LEFT — text */}
-              <div style={{ opacity:loaded?1:0, transform:loaded?"translateY(0)":"translateY(20px)", transition:"opacity .9s ease, transform .9s ease" }}>
-                {profile.available && (
-                  <div style={{ display:"inline-flex", alignItems:"center", marginBottom:28, background:"rgba(74,222,128,.06)", border:"1px solid rgba(74,222,128,.2)", padding:"6px 14px" }}>
-                    <span className="avdot" />
-                    <span style={{ fontFamily:"'Inconsolata',monospace", fontSize:10, letterSpacing:2, color:"#4ade80" }}>AVAILABLE FOR WORK</span>
-                  </div>
-                )}
-                <div className="sec-lbl">Creative Portfolio</div>
- 
-                {/* NAME — CAPITAL + G in white, responsive size, single line */}
-                <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(26px,3.2vw,50px)", fontWeight:500, lineHeight:1.15, marginBottom:24, whiteSpace:"nowrap" }}>
-                  <span style={{ color:"#ffffff", textTransform:"uppercase", letterSpacing:"2px" }}>DHARANITHARAN </span>
-                  <span style={{ color:"#ffffff", fontStyle:"normal" }}>G</span>
-                </h1>
- 
-                <div className="la" style={{ marginBottom:20 }} />
-                <p style={{ fontFamily:"'Inconsolata',monospace", fontSize:11, letterSpacing:2, color:"#f5c842", marginBottom:18, textTransform:"uppercase" }}>{profile.title}</p>
-                <p style={{ color:"#f0e6e6", lineHeight:1.85, fontSize:14.5, maxWidth:420, marginBottom:36 }}>{profile.bio}</p>
-                <div style={{ display:"flex", gap:12, flexWrap:"wrap" }}>
-                  <button className="gbtn" onClick={() => scrollTo("work")}><span className="gbtn-t">View My Work</span></button>
-                  <button className="ghostbtn" onClick={() => scrollTo("contact")}>Contact Me</button>
-                </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WORK ── */}
+      <section id="work" style={{padding:'100px 48px',borderTop:'1px solid #6b2020',background:'#3d1010'}}>
+        <div style={{maxWidth:1080,margin:'0 auto'}}>
+          <div data-rid="w0" className="reveal" style={{display:'flex',justifyContent:'space-between',alignItems:'flex-end',marginBottom:48,flexWrap:'wrap',gap:20}}>
+            <div>
+              <div className="sec-lbl">Selected Work</div>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(36px,4vw,56px)',fontWeight:400,lineHeight:1.1,color:'#fff'}}>Design <span style={{fontStyle:'italic',color:'#f5c842'}}>Gallery</span></h2>
+              <div style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#c9a0a0',marginTop:10,letterSpacing:1}}>{images.length} / 50 · click to expand · keyboard arrows to navigate</div>
+            </div>
+            {images.length<50&&<button className="gbtn" onClick={()=>gallRef.current.click()}><span className="gbtn-t">+ Add Images</span></button>}
+          </div>
+          <input ref={gallRef} type="file" accept="image/*" multiple style={{display:'none'}} onChange={e=>addImages(e.target.files)}/>
+          <div data-rid="w1" className="reveal d1">
+            {images.length===0?(
+              <div className={`dzone${drag?' ov':''}`} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);addImages(e.dataTransfer.files);}} onClick={()=>gallRef.current.click()}>
+                <div style={{fontSize:48,color:'#6b2020',marginBottom:18}}>⬡</div>
+                <p style={{fontFamily:"'Playfair Display',serif",fontSize:26,fontWeight:300,color:'#c9a0a0',marginBottom:10}}>Drop your designs here</p>
+                <p style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#7a3535',letterSpacing:2}}>or click to browse · max 50 images</p>
               </div>
- 
-              {/* RIGHT — profile pic upload box always visible */}
-              <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:16, opacity:loaded?1:0, transform:loaded?"translateY(0)":"translateY(20px)", transition:"opacity .9s ease .15s, transform .9s ease .15s" }}>
- 
-                {/* Profile picture box */}
-                <div style={{ width:"100%", position:"relative" }}>
-                  {profilePic ? (
-                    <div style={{ position:"relative" }}>
-                      <img src={profilePic} alt="Profile" style={{ width:"100%", height:320, objectFit:"cover", display:"block", border:"2px solid #f5c842" }} />
-                      <button onClick={() => picRef.current.click()} style={{ position:"absolute", bottom:10, right:10, background:"rgba(45,10,10,.9)", border:"1px solid #f5c842", color:"#f5c842", padding:"6px 14px", fontFamily:"'Inconsolata',monospace", fontSize:10, letterSpacing:1, cursor:"pointer" }}>
-                        ↑ Change Photo
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="pic-upload-box" onClick={() => picRef.current.click()}>
-                      <UploadIcon />
-                      <span style={{ fontFamily:"'Playfair Display',serif", fontSize:16, color:"#c9a0a0" }}>Upload Profile Photo</span>
-                      <span style={{ fontFamily:"'Inconsolata',monospace", fontSize:10, color:"#7a3535", letterSpacing:2 }}>CLICK TO BROWSE</span>
-                    </div>
-                  )}
+            ):(
+              <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(240px,1fr))',gap:14}} onDragOver={e=>{e.preventDefault();setDrag(true);}} onDragLeave={()=>setDrag(false)} onDrop={e=>{e.preventDefault();setDrag(false);addImages(e.dataTransfer.files);}}>
+                {images.map((img,idx)=>(
+                  <div key={img.id} className="gcrd" onClick={()=>openLb(img,idx)}>
+                    <img src={img.src} alt={img.name}/>
+                    <div className="gcrd-ov"><div className="gcrd-row"><button className="mini-row-btn" onClick={e=>{e.stopPropagation();openLb(img,idx);}}>Expand</button><button className="mini-row-btn rm" onClick={e=>{e.stopPropagation();removeImg(img.id);}}>✕ Remove</button></div></div>
+                  </div>
+                ))}
+                {images.length<50&&<div className="addcrd" onClick={()=>gallRef.current.click()}><span style={{fontSize:26,marginBottom:6}}>+</span><span style={{fontSize:9,letterSpacing:3}}>ADD MORE</span></div>}
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── ABOUT ── */}
+      <section id="about" style={{padding:'100px 48px',borderTop:'1px solid #6b2020',background:'#2d0a0a'}}>
+        <div className="agrid" style={{maxWidth:1080,margin:'0 auto',display:'grid',gridTemplateColumns:'1.1fr 1fr',gap:80,alignItems:'start'}}>
+          <div data-rid="a1" className="reveal fl">
+            <div className="sec-lbl">About Me</div>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(36px,4vw,56px)',fontWeight:400,lineHeight:1.1,marginBottom:28,color:'#fff'}}>Crafting Worlds<br/><span style={{fontStyle:'italic',color:'#f5c842'}}>Through Design</span></h2>
+            <div className="la" style={{marginBottom:24}}/>
+            <p style={{color:'#f0e6e6',lineHeight:1.9,fontSize:14.5,marginBottom:28}}>{profile.bio}</p>
+            <div style={{display:'flex',flexDirection:'column',gap:10}}>
+              {[['◎',profile.location],['◉',profile.email]].map(([icon,val])=>(
+                <div key={val} style={{display:'flex',alignItems:'center',gap:10,color:'#f0e6e6',fontFamily:"'Inconsolata',monospace",fontSize:12}}><span style={{color:'#f5c842'}}>{icon}</span>{val}</div>
+              ))}
+            </div>
+          </div>
+          <div data-rid="a2" className="reveal fr d2">
+            <div className="sec-lbl" style={{marginBottom:16}}>Skills</div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:8,marginBottom:40}}>{profile.skills.map((s,i)=><span key={i} className="schip">{s}</span>)}</div>
+            {profile.available&&(
+              <div style={{border:'1px solid rgba(74,222,128,.2)',background:'rgba(74,222,128,.05)',padding:'20px 22px'}}>
+                <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10}}><span className="avdot"/><span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,letterSpacing:2,color:'#4ade80'}}>OPEN TO OPPORTUNITIES</span></div>
+                <p style={{color:'#c9a0a0',fontSize:12,fontFamily:"'Inconsolata',monospace",lineHeight:1.7}}>Currently accepting freelance projects and full-time roles. Let's build something remarkable.</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CONTACT ── */}
+      <section id="contact" style={{padding:'100px 48px',borderTop:'1px solid #6b2020',background:'#3d1010'}}>
+        <div style={{maxWidth:1080,margin:'0 auto'}}>
+          <div data-rid="c0" className="reveal" style={{marginBottom:60}}>
+            <div className="sec-lbl">Get In Touch</div>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:'clamp(40px,5vw,68px)',fontWeight:400,lineHeight:1.05,color:'#fff'}}>Let's Work <span style={{fontStyle:'italic',color:'#f5c842'}}>Together.</span></h2>
+          </div>
+          <div className="cgrid" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:64,alignItems:'start'}}>
+            {/* Info */}
+            <div data-rid="c1" className="reveal fl d1">
+              <div className="la" style={{marginBottom:22}}/>
+              <p style={{color:'#f0e6e6',lineHeight:1.85,fontSize:14.5,maxWidth:380,marginBottom:30}}>Open to creative collaborations, brand projects, and meaningful work.</p>
+              <div style={{display:'flex',flexDirection:'column',gap:12}}>
+                <div style={{border:'1px solid #6b2020',padding:'16px 20px',background:'#4a1515'}}>
+                  <div style={{fontFamily:"'Inconsolata',monospace",fontSize:9,letterSpacing:3,color:'#c9a0a0',textTransform:'uppercase',marginBottom:5}}>Email</div>
+                  <div style={{fontSize:14,color:'#f5c842'}}>{profile.email}</div>
                 </div>
-                <input ref={picRef} type="file" accept="image/*" style={{ display:"none" }} onChange={handlePic} />
- 
-                {/* Stats */}
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:2, width:"100%", background:"#6b2020" }}>
-                  {[[images.length,"Gallery"],["50+","Designs"]].map(([n,l]) => (
-                    <div key={l} className="sbox"><div className="snum">{n}</div><div className="slbl">{l}</div></div>
-                  ))}
+                <div style={{border:'1px solid #6b2020',padding:'16px 20px',background:'#4a1515'}}>
+                  <div style={{fontFamily:"'Inconsolata',monospace",fontSize:9,letterSpacing:3,color:'#c9a0a0',textTransform:'uppercase',marginBottom:5}}>Location</div>
+                  <div style={{fontSize:14,color:'#f0e6e6'}}>{profile.location}</div>
                 </div>
+                <button className="slink" onClick={()=>window.open(`https://instagram.com/${profile.instagram.replace('@','')}`, '_blank')}><IgIcon/><span style={{flex:1}}>Instagram</span><span style={{color:'#f5c842',fontSize:12}}>{profile.instagram}</span></button>
+                <button className="slink" onClick={()=>window.open(profile.linkedin,'_blank')}><LiIcon/><span style={{flex:1}}>LinkedIn — Dharanitharan G</span><span style={{color:'#f5c842',fontSize:12}}>View Profile →</span></button>
               </div>
             </div>
-          </section>
- 
-          {/* WORK / GALLERY */}
-          <section id="work" style={{ padding:"100px 48px", borderTop:"1px solid #6b2020", background:"#3d1010" }}>
-            <div style={{ maxWidth:1080, margin:"0 auto" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:48, flexWrap:"wrap", gap:20 }}>
-                <div>
-                  <div className="sec-lbl">Selected Work</div>
-                  <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(36px,4vw,56px)", fontWeight:400, lineHeight:1.1, color:"#ffffff" }}>
-                    Design <span style={{ fontStyle:"italic", color:"#f5c842" }}>Gallery</span>
-                  </h2>
-                  <div style={{ fontFamily:"'Inconsolata',monospace", fontSize:11, color:"#c9a0a0", marginTop:10, letterSpacing:1 }}>
-                    {images.length} / 50 · click to expand · keyboard arrows to navigate
+            {/* FORM */}
+            <div data-rid="c2" className="reveal fr d2">
+              <div className="sec-lbl" style={{marginBottom:8}}>Let's Connect</div>
+              <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:28,fontWeight:400,color:'#fff',marginBottom:28}}>Send a <span style={{fontStyle:'italic',color:'#f5c842'}}>Message</span></h3>
+              {sent?(
+                <div style={{border:'1px solid rgba(74,222,128,.25)',background:'rgba(74,222,128,.05)',padding:'40px 24px',textAlign:'center'}}>
+                  <div style={{fontSize:40,marginBottom:14}}>✓</div>
+                  <p style={{fontFamily:"'Inconsolata',monospace",fontSize:12,color:'#4ade80',letterSpacing:3}}>MESSAGE SENT!</p>
+                  <p style={{color:'#c9a0a0',fontSize:12,marginTop:10,fontFamily:"'Inconsolata',monospace"}}>Thank you for reaching out.</p>
+                </div>
+              ):(
+                <div style={{display:'flex',flexDirection:'column',gap:16}}>
+                  <div><span className="lbl">Name <span style={{color:'#dc5050'}}>*</span></span><input className="field" placeholder="Your full name" value={form.name} onChange={e=>setForm(p=>({...p,name:e.target.value}))}/></div>
+                  <div><span className="lbl">Email <span style={{color:'#dc5050'}}>*</span></span><input className="field" type="email" placeholder="your@email.com" value={form.email} onChange={e=>setForm(p=>({...p,email:e.target.value}))}/></div>
+                  <div><span className="lbl">Subject</span><input className="field" placeholder="What is this about?" value={form.subject} onChange={e=>setForm(p=>({...p,subject:e.target.value}))}/></div>
+                  <div>
+                    <span className="lbl">Leave as a Message <span style={{color:'#dc5050'}}>*</span></span>
+                    <textarea className="field" style={{minHeight:150}} placeholder="Write your message here… (up to 2,000 characters)" maxLength={MAX_MSG} value={form.message} onChange={e=>setForm(p=>({...p,message:e.target.value}))}/>
+                    <div className="char-bar"><div className={`char-fill ${msgClass}`} style={{width:`${(msgLen/MAX_MSG)*100}%`}}/></div>
+                    <div style={{display:'flex',justifyContent:'space-between',marginTop:5}}>
+                      <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:msgClass==='over'?'#ff6060':msgClass==='warn'?'#f59c42':'#7a3535',letterSpacing:1}}>{msgLen.toLocaleString()} / {MAX_MSG.toLocaleString()} characters</span>
+                      {msgLen>0&&<span style={{fontFamily:"'Inconsolata',monospace",fontSize:9,color:'#5a2020'}}>{(MAX_MSG-msgLen).toLocaleString()} remaining</span>}
+                    </div>
                   </div>
-                </div>
-                {images.length < 50 && (
-                  <button className="gbtn" onClick={() => galleryRef.current.click()}><span className="gbtn-t">+ Add Images</span></button>
-                )}
-              </div>
-              <input ref={galleryRef} type="file" accept="image/*" multiple style={{ display:"none" }} onChange={e => addImages(e.target.files)} />
- 
-              {images.length === 0 ? (
-                <div className={`dzone${dragOver?" ov":""}`} style={{ padding:"72px 40px" }}
-                  onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={e => { e.preventDefault(); setDragOver(false); addImages(e.dataTransfer.files); }}
-                  onClick={() => galleryRef.current.click()}>
-                  <div style={{ fontSize:52, color:"#6b2020", marginBottom:20 }}>⬡</div>
-                  <p style={{ fontFamily:"'Playfair Display',serif", fontSize:28, fontWeight:300, color:"#c9a0a0", marginBottom:12 }}>Drop your designs here</p>
-                  <p style={{ fontFamily:"'Inconsolata',monospace", fontSize:11, color:"#7a3535", letterSpacing:2 }}>or click to browse · max 50 images</p>
-                </div>
-              ) : (
-                <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))", gap:10 }}
-                  onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-                  onDragLeave={() => setDragOver(false)}
-                  onDrop={e => { e.preventDefault(); setDragOver(false); addImages(e.dataTransfer.files); }}>
-                  {images.map((img,idx) => (
-                    <div key={img.id} className="gcrd" onClick={() => openLb(img,idx)}>
-                      <img src={img.src} alt={img.name} />
-                      <div className="gcrd-ov">
-                        <div className="gcrd-row">
-                          <button className="mini-row-btn" onClick={e => { e.stopPropagation(); openLb(img,idx); }}>Expand</button>
-                          <button className="mini-row-btn rm" onClick={e => { e.stopPropagation(); removeImage(img.id); }}>✕ Remove</button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  {images.length < 50 && (
-                    <div className="addcrd" onClick={() => galleryRef.current.click()}>
-                      <span style={{ fontSize:28, marginBottom:6 }}>+</span>
-                      <span style={{ fontSize:9, letterSpacing:3 }}>ADD MORE</span>
-                    </div>
-                  )}
+                  <div style={{marginTop:"20px",display:"flex",justifyContent:"center"}}><button className="submit-btn" style={{maxWidth:"260px",padding:"13px 40px"}} onClick={submitForm}><span>Send →</span></button></div>
                 </div>
               )}
             </div>
-          </section>
- 
-          {/* ABOUT */}
-          <section id="about" style={{ padding:"100px 48px", borderTop:"1px solid #6b2020", background:"#2d0a0a" }}>
-            <div className="about-grid" style={{ maxWidth:1080, margin:"0 auto", display:"grid", gridTemplateColumns:"1.1fr 1fr", gap:80, alignItems:"start" }}>
-              <div>
-                <div className="sec-lbl">About Me</div>
-                <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(36px,4vw,56px)", fontWeight:400, lineHeight:1.1, marginBottom:28, color:"#ffffff" }}>
-                  Crafting Worlds<br /><span style={{ fontStyle:"italic", color:"#f5c842" }}>Through Design</span>
-                </h2>
-                <div className="la" style={{ marginBottom:24 }} />
-                <p style={{ color:"#f0e6e6", lineHeight:1.9, fontSize:14.5, marginBottom:28 }}>{profile.bio}</p>
-                <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-                  {[["◎",profile.location],["◉",profile.email]].map(([icon,val]) => (
-                    <div key={val} style={{ display:"flex", alignItems:"center", gap:10, color:"#f0e6e6", fontFamily:"'Inconsolata',monospace", fontSize:12 }}>
-                      <span style={{ color:"#f5c842" }}>{icon}</span>{val}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <div className="sec-lbl" style={{ marginBottom:16 }}>Skills</div>
-                <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginBottom:40 }}>
-                  {profile.skills.map((s,i) => <span key={i} className="schip">{s}</span>)}
-                </div>
-                {profile.available && (
-                  <div style={{ border:"1px solid rgba(74,222,128,.2)", background:"rgba(74,222,128,.05)", padding:"20px 22px" }}>
-                    <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
-                      <span className="avdot" />
-                      <span style={{ fontFamily:"'Inconsolata',monospace", fontSize:10, letterSpacing:2, color:"#4ade80" }}>OPEN TO OPPORTUNITIES</span>
-                    </div>
-                    <p style={{ color:"#c9a0a0", fontSize:12, fontFamily:"'Inconsolata',monospace", lineHeight:1.7 }}>
-                      Currently accepting freelance projects and full-time roles. Let's build something remarkable.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
- 
-          {/* CONTACT */}
-          <section id="contact" style={{ padding:"100px 48px", borderTop:"1px solid #6b2020", background:"#3d1010" }}>
-            <div className="contact-grid" style={{ maxWidth:1080, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1fr", gap:80, alignItems:"center" }}>
-              <div>
-                <div className="sec-lbl">Get In Touch</div>
-                <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(40px,5vw,68px)", fontWeight:400, lineHeight:1.05, marginBottom:28, color:"#ffffff" }}>
-                  Let's Work<br /><span style={{ fontStyle:"italic", color:"#f5c842" }}>Together.</span>
-                </h2>
-                <div className="la" style={{ marginBottom:24 }} />
-                <p style={{ color:"#f0e6e6", lineHeight:1.85, fontSize:14.5, maxWidth:380 }}>
-                  Open to creative collaborations, brand projects, and meaningful work. Connect on social media.
-                </p>
-              </div>
-              <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-                <div style={{ border:"1px solid #6b2020", padding:"18px 22px", background:"#4a1515" }}>
-                  <div style={{ fontFamily:"'Inconsolata',monospace", fontSize:9, letterSpacing:3, color:"#c9a0a0", textTransform:"uppercase", marginBottom:6 }}>Email</div>
-                  <div style={{ fontSize:15, color:"#f5c842" }}>{profile.email}</div>
-                </div>
-                <div style={{ border:"1px solid #6b2020", padding:"18px 22px", background:"#4a1515" }}>
-                  <div style={{ fontFamily:"'Inconsolata',monospace", fontSize:9, letterSpacing:3, color:"#c9a0a0", textTransform:"uppercase", marginBottom:6 }}>Location</div>
-                  <div style={{ fontSize:15, color:"#f0e6e6" }}>{profile.location}</div>
-                </div>
-                <button className="slink" onClick={() => window.open(`https://instagram.com/${profile.instagram.replace("@","")}`, "_blank")}>
-                  <InstagramIcon /><span style={{ flex:1 }}>Instagram</span><span style={{ color:"#f5c842", fontSize:12 }}>{profile.instagram}</span>
-                </button>
-                <button className="slink" onClick={() => window.open(profile.linkedin, "_blank")}>
-                  <LinkedInIcon /><span style={{ flex:1 }}>LinkedIn — Dharanitharan G</span><span style={{ color:"#f5c842", fontSize:12 }}>View Profile →</span>
-                </button>
-              </div>
-            </div>
-          </section>
- 
-          {/* FOOTER */}
-          <footer style={{ padding:"28px 48px", borderTop:"1px solid #6b2020", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12, background:"#1e0505" }}>
-            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:18, fontWeight:400, color:"#ffffff" }}>
-              DHARANITHARAN<span style={{ color:"#ffffff", fontStyle:"normal" }}> G</span>
-            </span>
-            <span style={{ fontFamily:"'Inconsolata',monospace", fontSize:10, color:"#c9a0a0", letterSpacing:2 }}>
-              © {new Date().getFullYear()} DHARANITHARAN G
-            </span>
-            <div style={{ display:"flex", gap:8 }}>
-              <button className="ghostbtn" style={{ padding:"6px 12px" }} onClick={() => window.open(`https://instagram.com/${profile.instagram.replace("@","")}`, "_blank")}><InstagramIcon /></button>
-              <button className="ghostbtn" style={{ padding:"6px 12px" }} onClick={() => window.open(profile.linkedin, "_blank")}><LinkedInIcon /></button>
-            </div>
-          </footer>
+          </div>
         </div>
-      );
-    }
- 
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<Portfolio />);
-  </script>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{padding:'36px 48px',borderTop:'1px solid #6b2020',background:'#1e0505'}}>
+        {/* Top row: logo left, social right */}
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:12,marginBottom:24}}>
+          <span style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:400,color:'#fff'}}>DHARANITHARAN<span style={{color:'#fff'}}> G</span></span>
+          <div style={{display:'flex',gap:8}}>
+            <button className="ghostbtn" style={{padding:'6px 12px'}} onClick={()=>window.open(`https://instagram.com/${profile.instagram.replace('@','')}`, '_blank')}><IgIcon/></button>
+            <button className="ghostbtn" style={{padding:'6px 12px'}} onClick={()=>window.open(profile.linkedin,'_blank')}><LiIcon/></button>
+          </div>
+        </div>
+        {/* Center copyright — 2 rows */}
+        <div style={{borderTop:'1px solid #3d1010',paddingTop:20,textAlign:'center'}}>
+          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:11,color:'#c9a0a0',letterSpacing:2,marginBottom:6}}>
+            © 2026 By Dharanitharan G
+          </div>
+          <div style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:'#7a3535',letterSpacing:2}}>
+            All Rights Reserved
+          </div>
+        </div>
+      </footer>
+      </div>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Portfolio/>);
+</script>
 </body>
 </html>
