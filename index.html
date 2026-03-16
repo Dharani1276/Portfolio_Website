@@ -147,13 +147,11 @@
     .submit-btn span { position:relative; z-index:1; transition:color .3s; }
     .submit-btn:hover span { color:#2d0a0a; }
 
-    /* MOBILE FRAME */
     /* RESPONSIVE */
     @media(max-width:900px) {
       .hgrid { grid-template-columns:1fr !important; }
       .agrid { grid-template-columns:1fr !important; }
       .cgrid { grid-template-columns:1fr !important; }
-      .nav-links { display:none !important; }
     }
     @media(max-width:768px) {
       .pic-box { max-width:100% !important; }
@@ -161,12 +159,17 @@
       .hgrid > *:first-child { order:1; }
       .hgrid > *:last-child  { order:2; }
       .hero-name { font-size: clamp(20px,7vw,36px) !important; white-space:normal !important; }
+      /* Nav — logo left, links right, smaller text */
+      nav { height:auto !important; min-height:56px; padding:8px 14px !important; flex-wrap:nowrap !important; gap:6px !important; }
+      .nav-links { display:flex !important; gap:0px !important; flex-wrap:nowrap; }
+      .npill { font-size:9px !important; letter-spacing:1.5px !important; padding:5px 8px !important; }
     }
     @media(max-width:600px) {
-      nav { padding:0 14px !important; }
       footer { padding:18px !important; }
-      .mbox { padding:22px !important; }
       .hgrid { gap:32px !important; }
+    }
+    @media(max-width:380px) {
+      .npill { font-size:8px !important; letter-spacing:1px !important; padding:4px 6px !important; }
     }
   </style>
 </head>
@@ -329,11 +332,11 @@ function Portfolio() {
       )}
 
       {/* NAV */}
-      <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:200,height:64,padding:"0 28px",display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(18,2,2,.97)",backdropFilter:"blur(18px)",borderBottom:"1px solid #6b2020"}}>
-        <div style={{fontFamily:"'Playfair Display',serif",fontSize:19,color:"#fff",cursor:"pointer",flexShrink:0}} onClick={()=>scrollTo("hero")}>
+      <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:200,minHeight:56,padding:"0 16px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:8,background:"rgba(18,2,2,.97)",backdropFilter:"blur(18px)",borderBottom:"1px solid #6b2020"}}>
+        <div style={{fontFamily:"'Playfair Display',serif",fontSize:"clamp(13px,3.5vw,19px)",color:"#fff",cursor:"pointer",flexShrink:1,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",minWidth:0}} onClick={()=>scrollTo("hero")}>
           DHARANITHARAN <span style={{color:"#fff"}}>G</span>
         </div>
-        <div className="nav-links" style={{display:"flex",gap:2}}>
+        <div className="nav-links" style={{display:"flex",gap:2,flexShrink:0}}>
           {[["hero","Home"],["work","Work"],["about","About"],["contact","Contact"]].map(([id,l])=>(
             <span key={id} className={`npill${activeS===id?" act":""}`} onClick={()=>scrollTo(id)}>{l}</span>
           ))}
