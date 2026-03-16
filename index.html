@@ -44,11 +44,6 @@
     }
     .sec-shimmer.vis { animation: shimmerBorder 1.2s ease forwards; }
 
-    /* ── PAGE WIPE ── */
-    .wipe { position:fixed; inset:0; z-index:9100; background:#0d0101; transform:scaleY(0); transform-origin:top; pointer-events:none; transition:transform 0.3s cubic-bezier(.77,0,.18,1); }
-    .wipe.show { transform:scaleY(1); pointer-events:all; }
-    .wipe.hide { transform:scaleY(0); transform-origin:bottom; }
-
     /* NAV */
     .npill { font-family:'Inconsolata',monospace; font-size:10px; letter-spacing:3px; text-transform:uppercase; color:#c9a0a0; cursor:pointer; padding:6px 14px; border-radius:20px; transition:all .25s; border:1px solid transparent; }
     .npill:hover { color:#f5c842; }
@@ -246,7 +241,6 @@ function Portfolio() {
   const [lb,       setLb      ] = useState(null);
   const [lbIdx,    setLbIdx   ] = useState(0);
   const [activeS,  setActiveS ] = useState("hero");
-  const [wipe,     setWipe    ] = useState(false);
   const [form,     setForm    ] = useState({name:"",email:"",subject:"",message:""});
   const [sent,     setSent    ] = useState(false);
   const [toast,    setToast   ] = useState(null);
@@ -293,9 +287,9 @@ function Portfolio() {
 
   const toast$ = (msg,err=false)=>{ clearTimeout(tRef.current); setToast({msg,err}); tRef.current=setTimeout(()=>setToast(null),3000); };
 
-  const scrollTo = id=>{
-    setWipe(true);
-    setTimeout(()=>{ document.getElementById(id)?.scrollIntoView({behavior:"smooth"}); setActiveS(id); setTimeout(()=>setWipe(false),360); },280);
+  const scrollTo = id => {
+    document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
+    setActiveS(id);
   };
 
   const lbOpen = idx=>{ setLb(GALLERY[idx]); setLbIdx(idx); };
@@ -313,7 +307,6 @@ function Portfolio() {
   return (
     <div style={{background:"#2d0a0a",color:"#fff",minHeight:"100vh",fontFamily:"Georgia,serif",overflowX:"hidden"}}>
 
-      <div className={`wipe${wipe?" show":" hide"}`}/>
       {toast&&<div className={`toast${toast.err?" err":""}`}>{toast.msg}</div>}
 
       {/* LIGHTBOX */}
