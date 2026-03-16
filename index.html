@@ -19,12 +19,14 @@
     ::-webkit-scrollbar-thumb { background: #f5c842; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #e0a830; }
 
-    /* ── SMOOTH FADE-SCALE REVEAL ── */
+    /* SECTION REVEAL — fires on scroll */
     .reveal {
       opacity: 0;
       transform: translateY(36px) scale(0.97);
       transition: opacity 0.8s cubic-bezier(.16,1,.3,1), transform 0.8s cubic-bezier(.16,1,.3,1);
+      animation: revealFallback 0s 2s forwards;
     }
+    @keyframes revealFallback { to { opacity:1; transform:translate(0,0) scale(1); } }
     .reveal.fl { transform: translateX(-48px) scale(0.97); }
     .reveal.fr { transform: translateX(48px) scale(0.97); }
     .reveal.fz { transform: scale(0.92); } /* zoom-in effect */
@@ -89,7 +91,7 @@
 
     /* GALLERY CARD */
     .gcrd { position:relative; overflow:hidden; cursor:pointer; background:#4a1515; aspect-ratio:4/3; }
-    .gcrd img { width:100%; height:100%; object-fit:cover; transition:transform .6s cubic-bezier(.25,.46,.45,.94), filter .4s; filter:brightness(.85); display:block; }
+    .gcrd img { width:100%; height:100%; object-fit:cover; transition:transform .6s cubic-bezier(.25,.46,.45,.94), filter .4s; filter:brightness(1); display:block; }
     .gcrd:hover img { transform:scale(1.08); filter:brightness(1.05); }
     .gcrd-ov { position:absolute; inset:0; background:linear-gradient(to top,rgba(30,5,5,.92) 0%,transparent 55%); opacity:0; transition:opacity .35s; display:flex; flex-direction:column; justify-content:flex-end; padding:14px; gap:8px; }
     .gcrd:hover .gcrd-ov { opacity:1; }
@@ -252,16 +254,18 @@ function Portfolio() {
   useEffect(()=>{
     const obs = new IntersectionObserver(entries=>{
       entries.forEach(e=>{ setRevealed(v=>({...v,[e.target.dataset.rid]:e.isIntersecting})); });
-    },{threshold:0.1});
+    },{threshold:0.05, rootMargin:"0px 0px -40px 0px"});
     document.querySelectorAll("[data-rid]").forEach(el=>obs.observe(el));
     return ()=>obs.disconnect();
   },[]);
 
   useEffect(()=>{
     Object.entries(revealed).forEach(([rid,vis])=>{
-      document.querySelectorAll(`[data-rid="${rid}"]`).forEach(el=>{
-        vis ? el.classList.add("vis") : el.classList.remove("vis");
-      });
+      if(vis){
+        document.querySelectorAll(`[data-rid="${rid}"]`).forEach(el=>{
+          el.classList.add("vis");
+        });
+      }
     });
   },[revealed]);
 
@@ -383,11 +387,11 @@ function Portfolio() {
               {GALLERY.length} designs · click any image to expand
             </div>
           </div>
-          <div data-rid="w1" className="reveal d1">
+          <div data-rid="w1">
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(240px,1fr))",gap:14}}>
               {GALLERY.map((img,idx)=>(
                 <div key={img.id} className="gcrd" onClick={()=>lbOpen(idx)}>
-                  <img src={img.src} alt={img.name}/>
+                  <img src={img.src} alt={img.name} loading="lazy"/>
                   <div className="gcrd-ov">
                     <span style={{fontFamily:"'Inconsolata',monospace",fontSize:10,color:"#f5c842",letterSpacing:1}}>{img.name}</span>
                     <span style={{fontFamily:"'Inconsolata',monospace",fontSize:9,color:"#c9a0a0"}}>Click to expand</span>
